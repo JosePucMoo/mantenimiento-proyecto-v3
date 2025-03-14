@@ -1,0 +1,37 @@
+# Archivos y carpetas de Maven
+target/
+*.jar
+*.war
+*.ear
+
+# Configuración de IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Archivos de logs
+*.log
+logs/
+debug.log
+hs_err_pid*
+
+# Archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
+*.class
+
+# Configuración de entorno
+.env
+*.properties
+
+# Archivos de cobertura de pruebas
+jacoco.exec
+coverage/
+target/classes/com/mantenimiento/morado/Main.class
