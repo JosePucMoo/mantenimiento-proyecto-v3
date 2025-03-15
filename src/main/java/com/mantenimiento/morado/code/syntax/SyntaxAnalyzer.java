@@ -87,4 +87,29 @@ public class SyntaxAnalyzer {
         boolean multiInstanceFound = fileLines.stream().anyMatch(line -> pattern.matcher(line).matches());
         return multiInstanceFound;
     }
+
+    public static boolean isClassJavaFile(String filepath) {
+
+        try {
+            List<String> codeLines = SourceFile.getAllLinesFromFile(filepath);
+
+            for (String line : codeLines) {
+                String trimmedLine = line.trim();
+
+                if (isClassLine(trimmedLine)) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (IOException ioException) {
+            System.out.println("Error while reading file: " + ioException.getMessage());
+        }
+
+        return true;
+    }
+
+    private static boolean isClassLine(String line) {
+        return line.matches(Regex.CLASS_REGEX);
+    }
 }

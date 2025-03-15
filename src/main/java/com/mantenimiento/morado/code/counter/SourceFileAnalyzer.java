@@ -15,7 +15,8 @@ import com.mantenimiento.morado.util.Constants;
  *
  * @author Ruben Alvarado
  * @author Reynaldo Couoh
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  */
 public class SourceFileAnalyzer {
     private final String directoryPath;
@@ -44,20 +45,36 @@ public class SourceFileAnalyzer {
      */
     public void analyzePath() {
         DirectoryScanner scanner = new DirectoryScanner(directoryPath);
-        List<String> javaFilesPaths = scanner.getJavaFiles();
+        List<Path> javaSubdirectoriesPaths = scanner.getSubdirectories();
 
         printHeader();
 
+        for (Path directoryPath : javaSubdirectoriesPaths) {
+            List<String> javaFilesPaths = scanner.getJavaFiles(directoryPath);
+            analyzeJavaFiles(directoryPath.getFileName().toString(), javaFilesPaths);
+        }
+    }
+
+    private void analyzeJavaFiles(String directoryName, List<String> javaFilesPaths){
+        int totalPhysicalLOC = 0;
         for (String filePath : javaFilesPaths) {
             SourceFile file;
             if (SyntaxAnalyzer.isJavaFileWellWritten(filePath)) {
-                file = LOCCounter.countLOC(filePath);
+                if (!SyntaxAnalyzer.isClassJavaFile(filePath)) {
+                    file = getNoClassFile(filePath);
+                } else {
+                    file = LOCCounter.countLOC(filePath);
+                    totalPhysicalLOC += file.physicalLOC();
+                }                
             } else {
                 file = getBadSourceFile(filePath);
             }
 
-            printDetails(file);
+            printDetails(file, directoryName);
+            directoryName = "";
         }
+        
+        printTotalLOC(totalPhysicalLOC + "");
     }
 
     /**
@@ -67,8 +84,8 @@ public class SourceFileAnalyzer {
      * </p>
      */
     private void printHeader() {
-        System.out.printf("%-20s %-15s %-15s %-10s%n", "Program", "Logical LOC", "Physical LOC", "Status");
-        System.out.println("-------------------------------------------------------------");
+        System.out.printf("%-18s %-30s %-18s %-18s %-18s %-10s%n", "Program", "Class", "Number of methods", "Physical LOC", "Total physical LOC", "Status");
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------");
     }
 
     /**
@@ -80,13 +97,27 @@ public class SourceFileAnalyzer {
      *             physical LOC, and status to be printed
      * @see SourceFile
      */
-    private void printDetails(SourceFile file) {
+    private void printDetails(SourceFile file, String directoryName) {
         System.out.printf(
-            "%-20s %-15d %-15d %-10s%n",
+            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
+            directoryName,
             file.filename(),
-            file.logicalLOC(),
+            file.numOfMethods(),
             file.physicalLOC(),
+            "",
             file.status()
+        );
+    }
+
+    private void printTotalLOC(String totalPhysicalLOC) {
+        System.out.printf(
+            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
+            "",
+            "",
+            "",
+            "",
+            totalPhysicalLOC,
+            ""
         );
     }
 
@@ -105,7 +136,20 @@ public class SourceFileAnalyzer {
             file.getFileName().toString(),
             0,
             0,
+            0,
             Constants.JAVA_FILE_STATUS_ERROR
+        );
+    }
+
+    private SourceFile getNoClassFile(String filepath) {
+        Path file = Paths.get(filepath);
+
+        return new SourceFile(
+            file.getFileName().toString(),
+            0,
+            0,
+            0,
+            Constants.JAVA_FILE_STATUS_NO_CLASS
         );
     }
 

@@ -23,11 +23,13 @@ import com.mantenimiento.morado.util.Constants;
  * </p>
  * @author Rubén Alvarado
  * @author Reynaldo Couoh
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  */
 public class LOCCounter {
     private static int logicalLOC = 0;
     private static int physicalLOC = 0;
+    private static int numOfMethods = 0;
 
     /**
      * Counts both logical and physical lines of code from the specified file and
@@ -45,6 +47,7 @@ public class LOCCounter {
 
             setLogicalLOC(countLogicalLOC(codeLines));
             setPhysicalLOC(countPhysicalLOC(codeLines));
+            setNumOfMethods(countNumOfMethods(codeLines));
         } catch (IOException ioException) {
             System.err.println("Error while processing file: " + ioException.getMessage());
         }
@@ -53,6 +56,7 @@ public class LOCCounter {
             path.getFileName().toString(),
             logicalLOC,
             physicalLOC,
+            numOfMethods,
             Constants.JAVA_FILE_STATUS_OK
         );
     }
@@ -89,6 +93,37 @@ public class LOCCounter {
         }
 
         return physicalLOC;
+    }
+
+    private static int countNumOfMethods(List<String> codeLines) {
+        int numOfMethods = 0;
+        boolean inBlockComment = false;
+
+        for (String line : codeLines) {
+            String trimmed = line.trim();
+
+            if (inBlockComment) {
+                if (endsBlockComment(trimmed)) {
+                    inBlockComment = false;
+                }
+                continue;
+            }
+
+            if (startsBlockComment(trimmed)) {
+                inBlockComment = true;
+                continue;
+            }
+
+            if (!isIgnorableLine(trimmed) && isAbstractMethodLine(trimmed)) {
+                continue;
+            }
+
+            if (!isIgnorableLine(trimmed) && isMethodLine(trimmed)) {
+                numOfMethods++;
+            }
+        }
+
+        return numOfMethods;
     }
 
     /**
@@ -168,6 +203,14 @@ public class LOCCounter {
         return line.matches(".*\\b(class|interface|if|while|switch|for|try|do|public|private|protected|static)\\b.*\\{\\s*$");
     }
 
+    private static boolean isMethodLine(String line) {
+        return line.matches("^(public|private|protected)\\s+[a-zA-Z\\s]*\\s*[\\w<>\\[\\],]*\\s*\\w+\\s*\\(.*\\)?\\s*.*\\{?\\s*(//.*)?$");
+    }
+
+    private static boolean isAbstractMethodLine(String line) {
+        return line.matches("^(public|private|protected)\\s(abstract)\\s+[\\w<>\\[\\],]+\\s+\\w+\\s*\\(.*\\)?\\s*(//.*)?");
+    }
+
     /**
      * Sets the total count of logical lines of code.
      *
@@ -184,5 +227,9 @@ public class LOCCounter {
      */
     private static void setPhysicalLOC(int _physicalLOC) {
         physicalLOC = _physicalLOC;
+    }
+
+    private static void setNumOfMethods(int _numOfMethods) {
+        numOfMethods = _numOfMethods;
     }
 }

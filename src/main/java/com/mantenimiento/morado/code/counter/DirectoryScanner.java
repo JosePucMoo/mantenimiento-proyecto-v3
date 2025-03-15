@@ -13,7 +13,8 @@ import java.util.stream.Stream;
  * subdirectories to retrieve Java source files.
  *
  * @author Rubén Alvarado
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  */
 public class DirectoryScanner {
     private final String directoryPath;
@@ -36,9 +37,21 @@ public class DirectoryScanner {
      *         If an error occurs while accessing the directory, an empty list is returned.
      *
      */
-    public List<String> getJavaFiles() {
-        try (Stream<Path> paths = getFilePaths()) {
+    public List<String> getJavaFiles(Path subdirectory) {
+        try (Stream<Path> paths = getFilePaths(subdirectory)) {
             return filterJavaFiles(paths);
+        } catch (IOException ioException) {
+            System.err.println("Error while trying to read directory path: " + ioException.getMessage());
+        }
+        return List.of();
+    }
+
+    public List<Path> getSubdirectories () {
+        try {
+            Stream<Path> paths = Files.list(Paths.get(directoryPath));
+            return paths
+            .filter(Files::isDirectory)
+            .collect(Collectors.toList());
         } catch (IOException ioException) {
             System.err.println("Error while trying to read directory path: " + ioException.getMessage());
         }
@@ -53,8 +66,8 @@ public class DirectoryScanner {
      * directory.
      * @throws IOException If an I/O error occurs while accessing the file system
      */
-    private Stream<Path> getFilePaths () throws IOException {
-        return Files.walk(Paths.get(directoryPath))
+    private Stream<Path> getFilePaths (Path directory) throws IOException {
+        return Files.list(directory)
             .filter(Files::isRegularFile);
     }
 
