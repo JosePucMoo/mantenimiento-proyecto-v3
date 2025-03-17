@@ -1,5 +1,6 @@
 package com.mantenimiento.morado.code.counter;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,10 +53,21 @@ public class DirectoryScanner {
             return paths
             .filter(Files::isDirectory)
             .collect(Collectors.toList());
+            
         } catch (IOException ioException) {
             System.err.println("Error while trying to read directory path: " + ioException.getMessage());
         }
         return List.of();
+    }
+
+    public String getDirectoryName() {
+        Path currentDir = Paths.get(this.directoryPath); // No es necesario capturar IOException aquí
+        if (Files.exists(currentDir) && Files.isDirectory(currentDir)) {
+            return currentDir.getFileName().toString(); // Devuelve el nombre del directorio
+        } else {
+            System.err.println("El directorio no existe o no es válido: " + this.directoryPath);
+            return null; // Retorna null si no es un directorio válido
+        }
     }
 
     /**

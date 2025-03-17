@@ -46,12 +46,17 @@ public class SourceFileAnalyzer {
     public void analyzePath() {
         DirectoryScanner scanner = new DirectoryScanner(directoryPath);
         List<Path> javaSubdirectoriesPaths = scanner.getSubdirectories();
-
         printHeader();
 
-        for (Path directoryPath : javaSubdirectoriesPaths) {
-            List<String> javaFilesPaths = scanner.getJavaFiles(directoryPath);
-            analyzeJavaFiles(directoryPath.getFileName().toString(), javaFilesPaths);
+        if (javaSubdirectoriesPaths.isEmpty()) {
+            String directoryName = scanner.getDirectoryName();
+            List<String> javaFilesPaths = scanner.getJavaFiles(Paths.get(directoryPath)); 
+            analyzeJavaFiles(directoryName, javaFilesPaths);
+        } else {
+            for (Path subdirectoryPath : javaSubdirectoriesPaths) {
+                List<String> javaFilesPaths = scanner.getJavaFiles(subdirectoryPath);
+                analyzeJavaFiles(subdirectoryPath.getFileName().toString(), javaFilesPaths);
+            }
         }
     }
 
