@@ -23,7 +23,8 @@ import com.mantenimiento.morado.util.Regex;
  * </p>
  *
  * @author Ruben Alvarado
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  */
 public class SyntaxAnalyzer {
 

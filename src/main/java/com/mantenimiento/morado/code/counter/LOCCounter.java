@@ -10,16 +10,16 @@ import com.mantenimiento.morado.util.Constants;
 
 /**
  * The {@code LOCCounter} class provides functionality for counting the
- * physical and logical lines of code (LOC) in a Java source file.
+ * physical and logical lines of code (LOC), and the number of methods in a Java source file.
  *
  * <p>
  * Physical LOC counts non-empty lines of code excluding ignorable lines such as blank lines
- * or comments, while logical LOC counts statements (lines ending with a semicolon or an opening brace)
- * excluding comments and ignorable lines.
+ * or comments. The logical LOC counts statements (lines ending with a semicolon or an opening brace)
+ * excluding comments and ignorable lines. The method count does not consider abstract methods.
  * </p>
  * <p>
  * This class uses helper methods to determine if a line is part of a block comment,
- * should be ignored, or qualifies as a logical line.
+ * should be ignored, or qualifies as a logical line, a method, or an abstract method.
  * </p>
  * @author Rubén Alvarado
  * @author Reynaldo Couoh
@@ -32,12 +32,12 @@ public class LOCCounter {
     private static int numOfMethods = 0;
 
     /**
-     * Counts both logical and physical lines of code from the specified file and
+     * Counts the logical, physical, and class method lines of code in the specified file and
      * creates a {@code SourceFile} object with the file's name, LOC counts, and status.
      *
      * @param filePath The path of the Java source file to be analyzed.
      * @return A {@code SourceFile} object containing the file's name, logical LOC, physical LOC,
-     * and the Java file status constant from {@link Constants}.
+     * number of methods and the Java file status constant from {@link Constants}.
      */
     public static SourceFile countLOC(String filePath) {
         Path path = Paths.get(filePath);
@@ -95,6 +95,13 @@ public class LOCCounter {
         return physicalLOC;
     }
 
+    /**
+    * Counts the number of methods in a class.
+    * Abstract methods are not counted as methods.
+    *
+    * @param codeLines: A list of strings representing lines of code in the source file.
+    * @return: The number of methods in a class.
+    */
     private static int countNumOfMethods(List<String> codeLines) {
         int numOfMethods = 0;
         boolean inBlockComment = false;
@@ -203,10 +210,22 @@ public class LOCCounter {
         return line.matches(".*\\b(class|interface|if|while|switch|for|try|do|public|private|protected|static)\\b.*\\{\\s*$");
     }
 
+    /**
+    * Determines whether the given line is considered a method.
+    *
+    * @param line the line of code to trim
+    * @return {@code true} if the line is a method, otherwise {@code false}.
+    */
     private static boolean isMethodLine(String line) {
         return line.matches("^(public|private|protected)\\s+[a-zA-Z\\s]*\\s*[\\w<>\\[\\],]*\\s*\\w+\\s*\\(.*\\)?\\s*.*\\{?\\s*(//.*)?$");
     }
 
+    /**
+    * Determines whether the given line is considered an abstract method.
+    *
+    * @param line the line of code to trim
+    * @return {@code true} if the line is an abstract method, otherwise {@code false}.
+    */
     private static boolean isAbstractMethodLine(String line) {
         return line.matches("^(public|private|protected)\\s(abstract)\\s+[\\w<>\\[\\],]+\\s+\\w+\\s*\\(.*\\)?\\s*(//.*)?");
     }
@@ -229,6 +248,11 @@ public class LOCCounter {
         physicalLOC = _physicalLOC;
     }
 
+    /**
+    * Sets the total number of methods in a class
+    *
+    * @param _physicalLOC the number of methods to set
+    */
     private static void setNumOfMethods(int _numOfMethods) {
         numOfMethods = _numOfMethods;
     }

@@ -79,7 +79,9 @@ public class SourceFileAnalyzer {
             directoryName = "";
         }
         
-        printTotalLOC(totalPhysicalLOC + "");
+        if (totalPhysicalLOC > 0) {
+            printTotalLOC(totalPhysicalLOC + "");
+        }
     }
 
     /**
