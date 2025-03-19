@@ -1,5 +1,6 @@
 package com.mantenimiento.morado.code.counter;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +40,10 @@ public class DirectoryScanner {
      *
      */
     public List<String> getJavaFiles(Path subdirectory) {
+        if (Files.isRegularFile(subdirectory)) {
+            return subdirectory.toString().endsWith(".java") ? List.of(subdirectory.toString()) : List.of();
+        }
+
         try (Stream<Path> paths = getFilePaths(subdirectory)) {
             return filterJavaFiles(paths);
         } catch (IOException ioException) {
@@ -109,5 +114,10 @@ public class DirectoryScanner {
                 .map(Path::toString)
                 .filter(string -> string.endsWith(".java"))
                 .collect(Collectors.toList());
+    }
+
+    public boolean isFile(String path) {
+        File file = new File(path);
+        return file.exists() && file.isFile();
     }
 }
