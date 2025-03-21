@@ -50,27 +50,31 @@ public class SourceFileAnalyzer {
             printHeader(); 
             analyzeJavaFiles("", javaFilesPaths);
         } else{
-            analyzeDirectory(scanner);
+            List<Path> javaSubdirectoriesPaths = scanner.getSubdirectories();
+            printHeader();
+            analyzeDirectory(javaSubdirectoriesPaths, scanner);
         }
     }
 
-    private void analyzeDirectory(DirectoryScanner scanner){
-        List<Path> javaSubdirectoriesPaths = scanner.getSubdirectories();
-        printHeader();
-
+    private void analyzeDirectory(List<Path> javaSubdirectoriesPaths, DirectoryScanner scanner) {
+        int totalPhysicalLOC = 0;
         if (javaSubdirectoriesPaths.isEmpty()) {
             String directoryName = scanner.getDirectoryName();
             List<String> javaFilesPaths = scanner.getJavaFiles(Paths.get(directoryPath)); 
-            analyzeJavaFiles(directoryName, javaFilesPaths);
+            totalPhysicalLOC += analyzeJavaFiles(directoryName, javaFilesPaths);
         } else {
             for (Path subdirectoryPath : javaSubdirectoriesPaths) {
                 List<String> javaFilesPaths = scanner.getJavaFiles(subdirectoryPath);
-                analyzeJavaFiles(subdirectoryPath.getFileName().toString(), javaFilesPaths);
+                totalPhysicalLOC += analyzeJavaFiles(subdirectoryPath.getFileName().toString(), javaFilesPaths);
             }
+        }
+
+        if (totalPhysicalLOC > 0) {
+            printTotalProyectLOC(totalPhysicalLOC + "");
         }
     }
 
-    private void analyzeJavaFiles(String directoryName, List<String> javaFilesPaths){
+    private int analyzeJavaFiles(String directoryName, List<String> javaFilesPaths){
         int totalPhysicalLOC = 0;
         for (String filePath : javaFilesPaths) {
             SourceFile file;
@@ -84,14 +88,16 @@ public class SourceFileAnalyzer {
             } else {
                 file = getBadSourceFile(filePath);
             }
-
             printDetails(file, directoryName);
             directoryName = "";
         }
         
         if (totalPhysicalLOC > 0) {
-            printTotalLOC(totalPhysicalLOC + "");
+            printTotalProgramLOC(totalPhysicalLOC + "");
+            return totalPhysicalLOC;
         }
+
+        return 0;
     }
 
     /**
@@ -126,7 +132,7 @@ public class SourceFileAnalyzer {
         );
     }
 
-    private void printTotalLOC(String totalPhysicalLOC) {
+    private void printTotalProgramLOC(String totalPhysicalLOC) {
         System.out.printf(
             "%-18s %-30s %-18s %-18s %-18s %-10s%n",
             "",
@@ -137,6 +143,20 @@ public class SourceFileAnalyzer {
             ""
         );
     }
+
+    private void printTotalProyectLOC(String totalPhysicalLOC) {
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf(
+            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
+            "Total Lines",
+            "",
+            "",
+            "",
+            totalPhysicalLOC,
+            ""
+        );
+    }
+
 
     /**
      * Creates a {@code SourceFile} object representing a Java file that failed syntax analysis.
