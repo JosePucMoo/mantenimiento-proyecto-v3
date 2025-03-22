@@ -31,16 +31,17 @@ public class SourceFileAnalyzer {
     }
 
     /**
-     * Scans the directory for Java source files and analyzes their lines of code.
+     * Analyzes the specified path to process Java source files and count their lines of code (LOC).
      * <p>
-     * For each Java file found:
+     * The method determines whether the given path is a file or a directory and processes it accordingly:
      * </p>
      * <ul>
-     *   <li>If the file is well written according to the syntax analyzer, its LOC is counted.</li>
-     *   <li>Otherwise, it is marked as having an error.</li>
+     *   <li><b>If the path is a Java source file</b>: It extracts the file and analyzes its LOC.</li>
+     *   <li><b>If the path is a directory</b>: It scans for subdirectories and processes all Java files found within them.</li>
+     *   <li><b>If the path is invalid</b>: A message is printed indicating that the path is neither a file nor a directory.</li>
      * </ul>
      * <p>
-     * The results are printed to the console in a tabular format.
+     * The results are displayed in a tabular format in the console.
      * </p>
      */
     public void analyzePath() {
@@ -49,10 +50,12 @@ public class SourceFileAnalyzer {
             List<String> javaFilesPaths = scanner.getJavaFiles(Paths.get(directoryPath));
             printHeader(); 
             analyzeJavaFiles("", javaFilesPaths);
-        } else{
-            List<Path> javaSubdirectoriesPaths = scanner.getSubdirectories();
+        } else if (scanner.isDirectory(directoryPath)) {
+            List<Path> javaDirectoriesPaths = scanner.getSubdirectories();
             printHeader();
-            analyzeDirectory(javaSubdirectoriesPaths, scanner);
+            analyzeDirectory(javaDirectoriesPaths, scanner);
+        } else {
+            System.out.println("The specified path is not a valid file or directory.");
         }
     }
 
@@ -73,15 +76,9 @@ public class SourceFileAnalyzer {
      */
     private void analyzeDirectory(List<Path> javaSubdirectoriesPaths, DirectoryScanner scanner) {
         int totalPhysicalLOC = 0;
-        if (javaSubdirectoriesPaths.isEmpty()) {
-            String directoryName = scanner.getDirectoryName();
-            List<String> javaFilesPaths = scanner.getJavaFiles(Paths.get(directoryPath)); 
-            totalPhysicalLOC += analyzeJavaFiles(directoryName, javaFilesPaths);
-        } else {
-            for (Path subdirectoryPath : javaSubdirectoriesPaths) {
-                List<String> javaFilesPaths = scanner.getJavaFiles(subdirectoryPath);
-                totalPhysicalLOC += analyzeJavaFiles(subdirectoryPath.getFileName().toString(), javaFilesPaths);
-            }
+        for (Path subdirectoryPath : javaSubdirectoriesPaths) {
+            List<String> javaFilesPaths = scanner.getJavaFiles(subdirectoryPath);
+            totalPhysicalLOC += analyzeJavaFiles(subdirectoryPath.getFileName().toString(), javaFilesPaths);
         }
 
         if (totalPhysicalLOC > 0) {

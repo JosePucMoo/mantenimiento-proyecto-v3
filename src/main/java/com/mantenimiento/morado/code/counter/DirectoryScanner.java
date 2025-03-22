@@ -127,4 +127,15 @@ public class DirectoryScanner {
         File file = new File(path);
         return file.exists() && file.isFile();
     }
+
+    /**
+     * Checks if the specified path corresponds to an existing directory.
+     *
+     * @param path The directory path to check.
+     * @return {@code true} if the path corresponds to an existing directory, {@code false} otherwise.
+     */
+    public boolean isDirectory(String path) {
+        File directory = new File(path);
+        return directory.exists() && directory.isDirectory();
+    }
 }
