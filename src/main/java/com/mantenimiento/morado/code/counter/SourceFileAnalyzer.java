@@ -79,12 +79,11 @@ public class SourceFileAnalyzer {
         for (String filePath : javaFilesPaths) {
             SourceFile file;
             if (SyntaxAnalyzer.isJavaFileWellWritten(filePath)) {
+                file = LOCCounter.countLOC(filePath);
+                totalPhysicalLOC += file.physicalLOC();
                 if (!SyntaxAnalyzer.isClassJavaFile(filePath)) {
-                    file = getNoClassFile(filePath);
-                } else {
-                    file = LOCCounter.countLOC(filePath);
-                    totalPhysicalLOC += file.physicalLOC();
-                }                
+                    file = getNoClassFile(filePath, file.physicalLOC());
+                }              
             } else {
                 file = getBadSourceFile(filePath);
             }
@@ -178,13 +177,13 @@ public class SourceFileAnalyzer {
         );
     }
 
-    private SourceFile getNoClassFile(String filepath) {
+    private SourceFile getNoClassFile(String filepath, int physicalLOC) {
         Path file = Paths.get(filepath);
 
         return new SourceFile(
             file.getFileName().toString(),
             0,
-            0,
+            physicalLOC,
             0,
             Constants.JAVA_FILE_STATUS_NO_CLASS
         );
