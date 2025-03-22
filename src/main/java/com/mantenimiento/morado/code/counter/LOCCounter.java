@@ -10,12 +10,11 @@ import com.mantenimiento.morado.util.Constants;
 
 /**
  * The {@code LOCCounter} class provides functionality for counting the
- * physical and logical lines of code (LOC), and the number of methods in a Java source file.
+ * physical lines of code (LOC), and the number of methods in a Java source file.
  *
  * <p>
  * Physical LOC counts non-empty lines of code excluding ignorable lines such as blank lines
- * or comments. The logical LOC counts statements (lines ending with a semicolon or an opening brace)
- * excluding comments and ignorable lines. The method count does not consider abstract methods.
+ * or comments. The method count does not consider abstract methods.
  * </p>
  * <p>
  * This class uses helper methods to determine if a line is part of a block comment,
@@ -27,16 +26,15 @@ import com.mantenimiento.morado.util.Constants;
  * @version 2.0.0
  */
 public class LOCCounter {
-    private static int logicalLOC = 0;
     private static int physicalLOC = 0;
     private static int numOfMethods = 0;
 
     /**
-     * Counts the logical, physical, and class method lines of code in the specified file and
+     * Counts the physical and class method lines of code in the specified file and
      * creates a {@code SourceFile} object with the file's name, LOC counts, and status.
      *
      * @param filePath The path of the Java source file to be analyzed.
-     * @return A {@code SourceFile} object containing the file's name, logical LOC, physical LOC,
+     * @return A {@code SourceFile} object containing the file's name, logical LOC,
      * number of methods and the Java file status constant from {@link Constants}.
      */
     public static SourceFile countLOC(String filePath) {
@@ -44,8 +42,6 @@ public class LOCCounter {
 
         try {
             List<String> codeLines = SourceFile.getAllLinesFromFile(filePath);
-
-            setLogicalLOC(countLogicalLOC(codeLines));
             setPhysicalLOC(countPhysicalLOC(codeLines));
             setNumOfMethods(countNumOfMethods(codeLines));
         } catch (IOException ioException) {
@@ -54,7 +50,6 @@ public class LOCCounter {
 
         return new SourceFile(
             path.getFileName().toString(),
-            logicalLOC,
             physicalLOC,
             numOfMethods,
             Constants.JAVA_FILE_STATUS_OK
@@ -134,41 +129,6 @@ public class LOCCounter {
     }
 
     /**
-     * Counts the logical lines of code in the provided list of code lines.
-     * Logical LOC includes lines that represent statements, typically ending with a semicolon or an opening brace,
-     * excluding ignorable lines and comments.
-     *
-     * @param codeLines a list of strings representing lines of code from the source file
-     * @return the number of logical lines of code
-     */
-    private static int countLogicalLOC(List<String> codeLines) {
-        int logicalLOC = 0;
-        boolean inBlockComment = false;
-
-        for (String line : codeLines) {
-            String trimmed = line.trim();
-
-            if (inBlockComment) {
-                if (endsBlockComment(trimmed)) {
-                    inBlockComment = false;
-                }
-                continue;
-            }
-
-            if (startsBlockComment(trimmed)) {
-                inBlockComment = true;
-                continue;
-            }
-
-            if (!isIgnorableLine(trimmed) && isLogicalLine(trimmed)) {
-                logicalLOC++;
-            }
-        }
-
-        return logicalLOC;
-    }
-
-    /**
      * Checks whether the given line marks the end of a block comment.
      *
       * @param line The trimmed line of code.
@@ -199,16 +159,7 @@ public class LOCCounter {
         return line.isEmpty() || line.startsWith("//") || line.startsWith("*");
     }
 
-    /**
-     * Determines if the given line qualifies as a logical line of code.
-     * A logical line is defined as one that ends with a semicolon or an opening brace.
-     *
-     * @param line the trimmed line of code
-     * @return {@code true} if the line ends with ";" or "{", otherwise {@code false}.
-     */
-    private static boolean isLogicalLine(String line) {
-        return line.matches(".*\\b(class|interface|if|while|switch|for|try|do|public|private|protected|static)\\b.*\\{\\s*$");
-    }
+    
 
     /**
     * Determines whether the given line is considered a method.
@@ -231,15 +182,6 @@ public class LOCCounter {
     }
 
     /**
-     * Sets the total count of logical lines of code.
-     *
-     * @param _logicalLOC the logical LOC count to set
-     */
-    private static void setLogicalLOC(int _logicalLOC) {
-        logicalLOC = _logicalLOC;
-    }
-
-    /**
      * Sets the total count of physical lines of code.
      *
      * @param _physicalLOC the physical LOC count to set
@@ -257,3 +199,62 @@ public class LOCCounter {
         numOfMethods = _numOfMethods;
     }
 }
+
+    /*
+    
+     * Counts the logical lines of code in the provided list of code lines.
+     * Logical LOC includes lines that represent statements, typically ending with a semicolon or an opening brace,
+     * excluding ignorable lines and comments.
+     *
+     * @param codeLines a list of strings representing lines of code from the source file
+     * @return the number of logical lines of code
+    
+    
+      private static int countLogicalLOC(List<String> codeLines) {
+        int logicalLOC = 0;
+        boolean inBlockComment = false;
+
+        for (String line : codeLines) {
+            String trimmed = line.trim();
+
+            if (inBlockComment) {
+                if (endsBlockComment(trimmed)) {
+                    inBlockComment = false;
+                }
+                continue;
+            }
+
+            if (startsBlockComment(trimmed)) {
+                inBlockComment = true;
+                continue;
+            }
+
+            if (!isIgnorableLine(trimmed) && isLogicalLine(trimmed)) {
+                logicalLOC++;
+            }
+        }
+
+        return logicalLOC;
+    } 
+
+    
+     * Sets the total count of logical lines of code.
+     *
+     * @param _logicalLOC the logical LOC count to set
+
+    private static void setLogicalLOC(int _logicalLOC) {
+        logicalLOC = _logicalLOC;
+    }
+
+    
+     * Determines if the given line qualifies as a logical line of code.
+     * A logical line is defined as one that ends with a semicolon or an opening brace.
+     *
+     * @param line the trimmed line of code
+     * @return {@code true} if the line ends with ";" or "{", otherwise {@code false}.
+     
+    private static boolean isLogicalLine(String line) {
+        return line.matches(".*\\b(class|interface|if|while|switch|for|try|do|public|private|protected|static)\\b.*\\{\\s*$");
+    }
+
+    */

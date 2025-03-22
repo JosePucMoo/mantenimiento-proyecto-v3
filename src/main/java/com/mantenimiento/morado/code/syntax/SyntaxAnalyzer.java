@@ -89,6 +89,13 @@ public class SyntaxAnalyzer {
         return multiInstanceFound;
     }
 
+    /**
+     * Checks if a given Java file contains a class definition.
+     * It reads the file line by line and looks for the presence of a class declaration.
+     * 
+     * @param filepath The path to the Java file to check.
+     * @return {@code true} if the file contains a class, {@code false} otherwise.
+     */
     public static boolean isClassJavaFile(String filepath) {
 
         try {
@@ -110,6 +117,12 @@ public class SyntaxAnalyzer {
         return true;
     }
 
+    /**
+     * Checks if a given line of code matches the pattern of a class declaration.
+     * 
+     * @param line The line of code to check.
+     * @return {@code true} if the line matches the class declaration pattern, {@code false} otherwise.
+     */
     private static boolean isClassLine(String line) {
         return line.matches(Regex.CLASS_REGEX);
     }

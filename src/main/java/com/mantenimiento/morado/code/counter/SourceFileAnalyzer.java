@@ -56,6 +56,21 @@ public class SourceFileAnalyzer {
         }
     }
 
+    /**
+     * Scans the directory for Java source files and subdirectories. When there are no subdirectories, it analyzes every file, if there are, analyzes each one.
+     * <p>
+     * If the directory has no subdirectories:
+     * </p>
+     * <ul>
+     *   <li>Get every java file and count them.</li>
+     * </ul>
+     * <p>
+     * Otherwise, analyze every subdirectory and scan for its files.
+     * </p>
+     * <p>
+     * The results are printed to the console in a tabular format.
+     * </p>
+     */
     private void analyzeDirectory(List<Path> javaSubdirectoriesPaths, DirectoryScanner scanner) {
         int totalPhysicalLOC = 0;
         if (javaSubdirectoriesPaths.isEmpty()) {
@@ -74,6 +89,24 @@ public class SourceFileAnalyzer {
         }
     }
 
+    /**
+     * Analyzes a list of Java files, checks if they are well-written, and counts their physical lines of code.
+     * <p>
+     * If the file is well-written:
+     * </p>
+     * <ul>
+     *   <li>Counts LOC if it's a class file, or marks it as having no class if not.</li>
+     * </ul>
+     * <p>
+     * If the file is not well-written, it is marked with an error status.
+     * </p>
+     * <p>
+     * The results, including file details and total physical LOC, are printed in a tabular format.
+     * </p>
+     * 
+     * @param directoryName The name of the directory containing the Java files.
+     * @param javaFilesPaths The list of paths to the Java files.
+     */
     private int analyzeJavaFiles(String directoryName, List<String> javaFilesPaths){
         int totalPhysicalLOC = 0;
         for (String filePath : javaFilesPaths) {
@@ -131,6 +164,11 @@ public class SourceFileAnalyzer {
         );
     }
 
+    /**
+     * Prints the total physical lines of code (LOC) of a program in a formatted table.
+     * 
+     * @param totalPhysicalLOC The total number of physical LOC to print.
+     */
     private void printTotalProgramLOC(String totalPhysicalLOC) {
         System.out.printf(
             "%-18s %-30s %-18s %-18s %-18s %-10s%n",
@@ -143,6 +181,11 @@ public class SourceFileAnalyzer {
         );
     }
 
+    /**
+     * Prints the total physical lines of code (LOC) of a proyect in a formatted table.
+     * 
+     * @param totalPhysicalLOC The total number of physical LOC to print.
+     */
     private void printTotalProyectLOC(String totalPhysicalLOC) {
         System.out.println("---------------------------------------------------------------------------------------------------------------------------");
         System.out.printf(
@@ -172,17 +215,22 @@ public class SourceFileAnalyzer {
             file.getFileName().toString(),
             0,
             0,
-            0,
             Constants.JAVA_FILE_STATUS_ERROR
         );
     }
 
+    /**
+     * Creates a SourceFile object for a Java file .
+     * This gets relevant info of the class to print.
+     * 
+     * @param filepath The path to the Java file.
+     * @return A SourceFile object with a status of "no class".
+     */
     private SourceFile getNoClassFile(String filepath, int physicalLOC) {
         Path file = Paths.get(filepath);
 
         return new SourceFile(
             file.getFileName().toString(),
-            0,
             physicalLOC,
             0,
             Constants.JAVA_FILE_STATUS_NO_CLASS

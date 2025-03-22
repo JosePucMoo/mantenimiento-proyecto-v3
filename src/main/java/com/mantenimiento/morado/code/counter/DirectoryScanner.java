@@ -24,7 +24,7 @@ public class DirectoryScanner {
     /**
      * Constructs a new DirectoryScanner with the specified directory path
      *
-     * @param directoryPath The path to the directory containing Java source files.
+     * @param directoryPath The path to the directory containing Java source files or subdirectories.
      */
     public DirectoryScanner(String directoryPath) {
         this.directoryPath = directoryPath;
@@ -35,6 +35,7 @@ public class DirectoryScanner {
      * This method walks through the given directory, filters out non-file entries, and returns only the
      * files with a ".java" extension as a list of strings representing their absolute paths.
      *
+     * @param subdirectory The path to the directory containing Java source files.
      * @return A list of strings containing the absolute paths of all Java files found in the directory.
      *         If an error occurs while accessing the directory, an empty list is returned.
      *
@@ -116,6 +117,12 @@ public class DirectoryScanner {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Checks if the specified path corresponds to an existing file.
+     *
+     * @param path The file path to check.
+     * @return {@code true} if the path corresponds to an existing file, {@code false} otherwise.
+     */
     public boolean isFile(String path) {
         File file = new File(path);
         return file.exists() && file.isFile();
