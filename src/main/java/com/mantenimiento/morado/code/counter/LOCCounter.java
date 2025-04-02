@@ -10,49 +10,48 @@ import com.mantenimiento.morado.util.Constants;
 
 /**
  * The {@code LOCCounter} class provides functionality for counting the
- * physical and logical lines of code (LOC) in a Java source file.
+ * physical lines of code (LOC), and the number of methods in a Java source file.
  *
  * <p>
  * Physical LOC counts non-empty lines of code excluding ignorable lines such as blank lines
- * or comments, while logical LOC counts statements (lines ending with a semicolon or an opening brace)
- * excluding comments and ignorable lines.
+ * or comments. The method count does not consider abstract methods.
  * </p>
  * <p>
  * This class uses helper methods to determine if a line is part of a block comment,
- * should be ignored, or qualifies as a logical line.
+ * should be ignored, or qualifies as a logical line, a method, or an abstract method.
  * </p>
  * @author Rubén Alvarado
  * @author Reynaldo Couoh
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  */
 public class LOCCounter {
-    private static int logicalLOC = 0;
     private static int physicalLOC = 0;
+    private static int numOfMethods = 0;
 
     /**
-     * Counts both logical and physical lines of code from the specified file and
+     * Counts the physical and class method lines of code in the specified file and
      * creates a {@code SourceFile} object with the file's name, LOC counts, and status.
      *
      * @param filePath The path of the Java source file to be analyzed.
-     * @return A {@code SourceFile} object containing the file's name, logical LOC, physical LOC,
-     * and the Java file status constant from {@link Constants}.
+     * @return A {@code SourceFile} object containing the file's name, logical LOC,
+     * number of methods and the Java file status constant from {@link Constants}.
      */
     public static SourceFile countLOC(String filePath) {
         Path path = Paths.get(filePath);
 
         try {
             List<String> codeLines = SourceFile.getAllLinesFromFile(filePath);
-
-            setLogicalLOC(countLogicalLOC(codeLines));
             setPhysicalLOC(countPhysicalLOC(codeLines));
+            setNumOfMethods(countNumOfMethods(codeLines));
         } catch (IOException ioException) {
             System.err.println("Error while processing file: " + ioException.getMessage());
         }
 
         return new SourceFile(
             path.getFileName().toString(),
-            logicalLOC,
             physicalLOC,
+            numOfMethods,
             Constants.JAVA_FILE_STATUS_OK
         );
     }
@@ -92,15 +91,14 @@ public class LOCCounter {
     }
 
     /**
-     * Counts the logical lines of code in the provided list of code lines.
-     * Logical LOC includes lines that represent statements, typically ending with a semicolon or an opening brace,
-     * excluding ignorable lines and comments.
-     *
-     * @param codeLines a list of strings representing lines of code from the source file
-     * @return the number of logical lines of code
-     */
-    private static int countLogicalLOC(List<String> codeLines) {
-        int logicalLOC = 0;
+    * Counts the number of methods in a class.
+    * Abstract methods are not counted as methods.
+    *
+    * @param codeLines: A list of strings representing lines of code in the source file.
+    * @return: The number of methods in a class.
+    */
+    private static int countNumOfMethods(List<String> codeLines) {
+        int numOfMethods = 0;
         boolean inBlockComment = false;
 
         for (String line : codeLines) {
@@ -118,12 +116,16 @@ public class LOCCounter {
                 continue;
             }
 
-            if (!isIgnorableLine(trimmed) && isLogicalLine(trimmed)) {
-                logicalLOC++;
+            if (!isIgnorableLine(trimmed) && isAbstractMethodLine(trimmed)) {
+                continue;
+            }
+
+            if (!isIgnorableLine(trimmed) && isMethodLine(trimmed)) {
+                numOfMethods++;
             }
         }
 
-        return logicalLOC;
+        return numOfMethods;
     }
 
     /**
@@ -157,24 +159,26 @@ public class LOCCounter {
         return line.isEmpty() || line.startsWith("//") || line.startsWith("*");
     }
 
+    
+
     /**
-     * Determines if the given line qualifies as a logical line of code.
-     * A logical line is defined as one that ends with a semicolon or an opening brace.
-     *
-     * @param line the trimmed line of code
-     * @return {@code true} if the line ends with ";" or "{", otherwise {@code false}.
-     */
-    private static boolean isLogicalLine(String line) {
-        return line.matches(".*\\b(class|interface|if|while|switch|for|try|do|public|private|protected|static)\\b.*\\{\\s*$");
+    * Determines whether the given line is considered a method.
+    *
+    * @param line the line of code to trim
+    * @return {@code true} if the line is a method, otherwise {@code false}.
+    */
+    private static boolean isMethodLine(String line) {
+        return line.matches("^(public|private|protected)\\s+[a-zA-Z\\s]*\\s*[\\w<>\\[\\],]*\\s*\\w+\\s*\\(.*\\)?\\s*.*\\{?\\s*(//.*)?$");
     }
 
     /**
-     * Sets the total count of logical lines of code.
-     *
-     * @param _logicalLOC the logical LOC count to set
-     */
-    private static void setLogicalLOC(int _logicalLOC) {
-        logicalLOC = _logicalLOC;
+    * Determines whether the given line is considered an abstract method.
+    *
+    * @param line the line of code to trim
+    * @return {@code true} if the line is an abstract method, otherwise {@code false}.
+    */
+    private static boolean isAbstractMethodLine(String line) {
+        return line.matches("^(public|private|protected)\\s(abstract)\\s+[\\w<>\\[\\],]+\\s+\\w+\\s*\\(.*\\)?\\s*(//.*)?");
     }
 
     /**
@@ -184,5 +188,14 @@ public class LOCCounter {
      */
     private static void setPhysicalLOC(int _physicalLOC) {
         physicalLOC = _physicalLOC;
+    }
+
+    /**
+    * Sets the total number of methods in a class
+    *
+    * @param _physicalLOC the number of methods to set
+    */
+    private static void setNumOfMethods(int _numOfMethods) {
+        numOfMethods = _numOfMethods;
     }
 }

@@ -7,7 +7,8 @@ package com.mantenimiento.morado.util;
  * </p>
  *
  * @author Ruben Alvarado
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  */
 public class Constants {
 
@@ -20,4 +21,9 @@ public class Constants {
      * Represents the status of a Java file that contains syntax errors or does not follow the required conventions.
      */
     public static final String JAVA_FILE_STATUS_ERROR = "Bad file";
+
+    /**
+     * Represents the state of a Java file that does not contain a class
+     */
+    public static final String JAVA_FILE_STATUS_NO_CLASS = "No class";
 }

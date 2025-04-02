@@ -14,15 +14,16 @@ import java.util.List;
  * </p>
  *
  * @author Ruben Alvarado
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  *
  * @param filename   the name of the source file
- * @param logicalLOC the number of logical lines of code in the file
  * @param physicalLOC the number of physical lines of code in the file
+ * @param numOfMethods the number of methods of code in the file
  * @param status     the status of the source file (e.g., "well-written", "error", etc.)
  *
  */
-public record SourceFile(String filename, int logicalLOC, int physicalLOC, String status) {
+public record SourceFile(String filename, int physicalLOC, int numOfMethods, String status) {
 
     /**
      * Reads all lines from the specified file.

@@ -23,7 +23,8 @@ import com.mantenimiento.morado.util.Regex;
  * </p>
  *
  * @author Ruben Alvarado
- * @version 1.0.0
+ * @author Diana Vazquez
+ * @version 2.0.0
  */
 public class SyntaxAnalyzer {
 
@@ -86,5 +87,43 @@ public class SyntaxAnalyzer {
         Pattern pattern = Pattern.compile(Regex.MULTI_INSTANCE_REGEX);
         boolean multiInstanceFound = fileLines.stream().anyMatch(line -> pattern.matcher(line).matches());
         return multiInstanceFound;
+    }
+
+    /**
+     * Checks if a given Java file contains a class definition.
+     * It reads the file line by line and looks for the presence of a class declaration.
+     * 
+     * @param filepath The path to the Java file to check.
+     * @return {@code true} if the file contains a class, {@code false} otherwise.
+     */
+    public static boolean isClassJavaFile(String filepath) {
+
+        try {
+            List<String> codeLines = SourceFile.getAllLinesFromFile(filepath);
+
+            for (String line : codeLines) {
+                String trimmedLine = line.trim();
+
+                if (isClassLine(trimmedLine)) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (IOException ioException) {
+            System.out.println("Error while reading file: " + ioException.getMessage());
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if a given line of code matches the pattern of a class declaration.
+     * 
+     * @param line The line of code to check.
+     * @return {@code true} if the line matches the class declaration pattern, {@code false} otherwise.
+     */
+    private static boolean isClassLine(String line) {
+        return line.matches(Regex.CLASS_REGEX);
     }
 }

@@ -7,7 +7,8 @@ package com.mantenimiento.morado.util;
  * </p>
  *
  * @author Ruben Alvarado
- * @version 1.0
+ * @author Diana Vazquez
+ * @version 2.0
  */
 public class Regex {
 
@@ -26,4 +27,17 @@ public class Regex {
      * </p>
      */
     public static final String MULTI_INSTANCE_REGEX = "^\\s*\\w+\\s+\\w+\\s*=\\s*[^,;]+\\s*,\\s*\\w+.*;\\s*$";
+
+    /**
+     * Regular expression for detecting class declarations in Java files.
+     * <p>
+     * This pattern matches lines where a class is declared, with optional access modifiers (public, private, protected),
+     * and optional additional modifiers like static or abstract). The class declaration must include the keyword "class" followed by the class name. Comments at the end of the line are also allowed.
+     * </p>
+     * <pre>
+     * public class MyClass {
+     * private static class AnotherClass {
+     * </pre>
+     */
+    public static final String CLASS_REGEX = "(public|private|protected)(\\s\\w+)*\\s+(class).*\\s*(//.*)?$";
 }
