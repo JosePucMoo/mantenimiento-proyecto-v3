@@ -92,7 +92,7 @@ public class SourceFileAnalyzer {
      * If the file is well-written:
      * </p>
      * <ul>
-     *   <li>Counts LOC if it's a class file, or marks it as having no class if not.</li>
+     *   <li>Counts LOC, marks it as having no class if not.</li>
      * </ul>
      * <p>
      * If the file is not well-written, it is marked with an error status.
