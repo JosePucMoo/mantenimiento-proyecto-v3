@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.mantenimiento.morado.code.model.JavaProject;
+import com.mantenimiento.morado.code.model.SourceFile;
 
 /**
  * The {@code DirectoryScanner} class is responsible for scanning a given directory and its
@@ -28,6 +32,43 @@ public class DirectoryScanner {
      */
     public DirectoryScanner(String directoryPath) {
         this.directoryPath = directoryPath;
+    }
+
+    /**
+     * Scans the directory and creates a JavaProject with all found Java files.
+     *
+     * @return A JavaProject containing all Java source files found in the directory and subdirectories.
+     */
+    public JavaProject scanProject() {
+        String projectName = getDirectoryName();
+        List<SourceFile> sourceFiles = new ArrayList<>();
+        
+        List<Path> subdirectories = getSubdirectories();
+        for (Path subdirectory : subdirectories) {
+            List<String> javaFilesPaths = getJavaFiles(subdirectory);
+            for (String filePath : javaFilesPaths) {
+                sourceFiles.add(createSourceFile(filePath));
+            }
+        }
+        JavaProject javaProject = new JavaProject(projectName, sourceFiles);
+        
+        return javaProject;
+    }
+
+    /**
+     * Creates a basic SourceFile instance for a given file path.
+     * This is a placeholder until proper analysis is done in SourceFileAnalyzer.
+     */
+    private SourceFile createSourceFile(String filePath) {
+        Path path = Paths.get(filePath);
+        return new SourceFile(
+            path.getFileName().toString(),
+            0,  // physicalLOC will be set later
+            0,  // numOfMethods will be set later
+            0,  // addedLines
+            0,  // deletedLines
+            ""  // status will be set later
+        );
     }
 
     /**
