@@ -50,6 +50,7 @@ public class LOCCounter {
 
         return new SourceFile(
             path.getFileName().toString(),
+            path.toString(),
             physicalLOC,
             numOfMethods,
             0,

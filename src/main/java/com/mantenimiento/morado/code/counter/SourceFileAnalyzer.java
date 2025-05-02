@@ -49,7 +49,7 @@ public class SourceFileAnalyzer {
      * @return void
      */
     public void analyzePath() {
-        for (String directoryPath : directoryPaths) {
+        for (String directoryPath : this.directoryPaths) {
             DirectoryScanner scanner = new DirectoryScanner(directoryPath);
             JavaProject project = scanner.scanProject();
             
@@ -92,7 +92,7 @@ public class SourceFileAnalyzer {
      * @throws NullPointerException if file is null
      */
     private SourceFile analyzeFile(SourceFile file) {
-        String filePath = Paths.get(directoryPaths.get(0), file.filename()).toString();
+        String filePath = file.filePath();
         if (SyntaxAnalyzer.isJavaFileWellWritten(filePath)) {
             SourceFile countedFile = LOCCounter.countLOC(filePath);
             if (!SyntaxAnalyzer.isClassJavaFile(filePath)) {
@@ -185,6 +185,7 @@ public class SourceFileAnalyzer {
 
         return new SourceFile(
             file.getFileName().toString(),
+            file.toString(),
             0,
             0,
             0,
@@ -205,6 +206,7 @@ public class SourceFileAnalyzer {
 
         return new SourceFile(
             file.getFileName().toString(),
+            file.toString(),
             physicalLOC,
             0,
             0,
