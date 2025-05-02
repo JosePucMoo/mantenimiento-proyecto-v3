@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.mantenimiento.morado.code.model.JavaProject;
 import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.code.syntax.SyntaxAnalyzer;
 import com.mantenimiento.morado.util.Constants;
@@ -19,114 +20,88 @@ import com.mantenimiento.morado.util.Constants;
  * @version 2.0.0
  */
 public class SourceFileAnalyzer {
-    private final String directoryPath;
+    private final List<String> directoryPaths;
 
     /**
-     * Constructs a new {@code SourceFileAnalyzer} with the specified directory path
+     * Constructs a new {@code SourceFileAnalyzer} with the specified list of directory paths.
      *
-     * @param directoryPath The path to the directory containing Java source files.
+     * @param directoryPaths The list of paths to directories containing Java source files,
+     *                       typically ordered from oldest to newest versions.
      */
-    public SourceFileAnalyzer(String directoryPath) {
-        this.directoryPath = directoryPath;
+    public SourceFileAnalyzer(List<String> directoryPaths) {
+        this.directoryPaths = directoryPaths;
     }
 
     /**
-     * Analyzes the specified path to process Java source files and count their lines of code (LOC).
-     * <p>
-     * The method determines whether the given path is a file or a directory and processes it accordingly:
-     * </p>
-     * <ul>
-     *   <li><b>If the path is a Java source file</b>: It extracts the file and analyzes its LOC.</li>
-     *   <li><b>If the path is a directory</b>: It scans for subdirectories and processes all Java files found within them.</li>
-     *   <li><b>If the path is invalid</b>: A message is printed indicating that the path is neither a file nor a directory.</li>
-     * </ul>
-     * <p>
-     * The results are displayed in a tabular format in the console.
-     * </p>
+     * Analyzes all Java source files in the configured directories.
+     *
+     * The analysis process for each directory consists of:
+     * - Scanning for Java source files.
+     * - Validating the syntax of each source file.
+     * - Calculating metrics such as lines of code (LOC), number of methods, and other statistics.
+     * - Printing the formatted results.
+     *
+     * The output includes:
+     * - Metrics for each analyzed file.
+     * - Project-wide total metrics.
+     * - Code quality status indicators.
+     *
+     * @return void
      */
     public void analyzePath() {
-        DirectoryScanner scanner = new DirectoryScanner(directoryPath);
-        if (scanner.isFile(directoryPath)) {
-            List<String> javaFilesPaths = scanner.getJavaFiles(Paths.get(directoryPath));
-            printHeader(); 
-            analyzeJavaFiles("", javaFilesPaths);
-        } else if (scanner.isDirectory(directoryPath)) {
-            List<Path> javaDirectoriesPaths = scanner.getSubdirectories();
+        for (String directoryPath : directoryPaths) {
+            DirectoryScanner scanner = new DirectoryScanner(directoryPath);
+            JavaProject project = scanner.scanProject();
+            
+            if (project.getSourceFiles().isEmpty()) {
+                System.out.println("No Java files found in: " + directoryPath);
+                continue;
+            }
+            
             printHeader();
-            analyzeDirectory(javaDirectoriesPaths, scanner);
-        } else {
-            System.out.println("The specified path is not a valid file or directory.");
+            analyzeProject(project);
         }
     }
 
     /**
-     * Scans the directory for Java source files and subdirectories. When there are no subdirectories, it analyzes every file, if there are, analyzes each one.
-     * <p>
-     * If the directory has no subdirectories:
-     * </p>
-     * <ul>
-     *   <li>Get every java file and count them.</li>
-     * </ul>
-     * <p>
-     * Otherwise, analyze every subdirectory and scan for its files.
-     * </p>
-     * <p>
-     * The results are printed to the console in a tabular format.
-     * </p>
+     * Analyzes all files in a Java project and updates their metrics.
+     *
+     * @param project the JavaProject to analyze
+     * @throws NullPointerException if project is null
      */
-    private void analyzeDirectory(List<Path> javaSubdirectoriesPaths, DirectoryScanner scanner) {
-        int totalPhysicalLOC = 0;
-        for (Path subdirectoryPath : javaSubdirectoriesPaths) {
-            List<String> javaFilesPaths = scanner.getJavaFiles(subdirectoryPath);
-            totalPhysicalLOC += analyzeJavaFiles(subdirectoryPath.getFileName().toString(), javaFilesPaths);
+    private void analyzeProject(JavaProject project) {
+        int index = 0;
+        for (SourceFile file : project.getSourceFiles()) {
+            SourceFile analyzedFile = analyzeFile(file);
+            project.updateSourceFile(index, analyzedFile);
+            index++;
+            printDetails(analyzedFile, project.getProjectName());
         }
 
+        int totalPhysicalLOC = project.getTotalPhysicalLOC();
         if (totalPhysicalLOC > 0) {
             printTotalProyectLOC(totalPhysicalLOC + "");
         }
     }
 
     /**
-     * Analyzes a list of Java files, checks if they are well-written, and counts their physical lines of code.
-     * <p>
-     * If the file is well-written:
-     * </p>
-     * <ul>
-     *   <li>Counts LOC, marks it as having no class if not.</li>
-     * </ul>
-     * <p>
-     * If the file is not well-written, it is marked with an error status.
-     * </p>
-     * <p>
-     * The results, including file details and total physical LOC, are printed in a tabular format.
-     * </p>
-     * 
-     * @param directoryName The name of the directory containing the Java files.
-     * @param javaFilesPaths The list of paths to the Java files.
+     * Analyzes an individual source file, calculating metrics and validating syntax.
+     *
+     * @param file the source file to analyze
+     * @return a new SourceFile instance with updated metrics
+     * @throws NullPointerException if file is null
      */
-    private int analyzeJavaFiles(String directoryName, List<String> javaFilesPaths){
-        int totalPhysicalLOC = 0;
-        for (String filePath : javaFilesPaths) {
-            SourceFile file;
-            if (SyntaxAnalyzer.isJavaFileWellWritten(filePath)) {
-                file = LOCCounter.countLOC(filePath);
-                totalPhysicalLOC += file.physicalLOC();
-                if (!SyntaxAnalyzer.isClassJavaFile(filePath)) {
-                    file = getNoClassFile(filePath, file.physicalLOC());
-                }              
-            } else {
-                file = getBadSourceFile(filePath);
+    private SourceFile analyzeFile(SourceFile file) {
+        String filePath = Paths.get(directoryPaths.get(0), file.filename()).toString();
+        if (SyntaxAnalyzer.isJavaFileWellWritten(filePath)) {
+            SourceFile countedFile = LOCCounter.countLOC(filePath);
+            if (!SyntaxAnalyzer.isClassJavaFile(filePath)) {
+                return getNoClassFile(filePath, countedFile.physicalLOC());
             }
-            printDetails(file, directoryName);
-            directoryName = "";
+            return countedFile;
+        } else {
+            return getBadSourceFile(filePath);
         }
-        
-        if (totalPhysicalLOC > 0) {
-            printTotalProgramLOC(totalPhysicalLOC + "");
-            return totalPhysicalLOC;
-        }
-
-        return 0;
     }
 
     /**
@@ -212,6 +187,8 @@ public class SourceFileAnalyzer {
             file.getFileName().toString(),
             0,
             0,
+            0,
+            0,
             Constants.JAVA_FILE_STATUS_ERROR
         );
     }
@@ -229,6 +206,8 @@ public class SourceFileAnalyzer {
         return new SourceFile(
             file.getFileName().toString(),
             physicalLOC,
+            0,
+            0,
             0,
             Constants.JAVA_FILE_STATUS_NO_CLASS
         );

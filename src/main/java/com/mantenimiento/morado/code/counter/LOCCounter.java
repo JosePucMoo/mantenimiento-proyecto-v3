@@ -52,6 +52,8 @@ public class LOCCounter {
             path.getFileName().toString(),
             physicalLOC,
             numOfMethods,
+            0,
+            0,
             Constants.JAVA_FILE_STATUS_OK
         );
     }

@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Represents a source file with its name, logical lines of code, physical lines of code,
- * and a status indicating its state.
+ * number of methods, added/deleted lines, and a status indicating its state.
  * <p>
  * This record is used to encapsulate basic information about a Java source file.
  * It provides a static method to read all lines from a file.
@@ -15,16 +15,24 @@ import java.util.List;
  *
  * @author Ruben Alvarado
  * @author Diana Vazquez
- * @version 2.0.0
+ * @author Fernando Joachin
+ * @version 2.1.0
  *
- * @param filename   the name of the source file
- * @param physicalLOC the number of physical lines of code in the file
- * @param numOfMethods the number of methods of code in the file
- * @param status     the status of the source file (e.g., "well-written", "error", etc.)
- *
+ * @param filename      the name of the source file
+ * @param physicalLOC   the number of physical lines of code in the file
+ * @param numOfMethods  the number of methods in the file
+ * @param addedLines    the number of lines added to the file
+ * @param deletedLines  the number of lines deleted from the file
+ * @param status        the status of the source file (e.g., "well-written", "error", etc.)
  */
-public record SourceFile(String filename, int physicalLOC, int numOfMethods, String status) {
-
+public record SourceFile(
+    String filename,
+    int physicalLOC,
+    int numOfMethods,
+    int addedLines,
+    int deletedLines,
+    String status
+){
     /**
      * Reads all lines from the specified file.
      *
