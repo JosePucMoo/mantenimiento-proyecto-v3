@@ -2,6 +2,7 @@ package com.mantenimiento.morado.code.counter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mantenimiento.morado.code.model.JavaProject;
@@ -49,17 +50,29 @@ public class SourceFileAnalyzer {
      * @return void
      */
     public void analyzePath() {
-        for (String directoryPath : this.directoryPaths) {
-            DirectoryScanner scanner = new DirectoryScanner(directoryPath);
-            JavaProject project = scanner.scanProject();
-            
-            if (project.getSourceFiles().isEmpty()) {
-                System.out.println("No Java files found in: " + directoryPath);
-                continue;
-            }
-            
+        List<JavaProject> projectstoAnalyze = new ArrayList<>();
+
+        DirectoryScanner scanner = new DirectoryScanner(this.directoryPaths.get(0));
+        JavaProject oldProject = scanner.scanProject();
+
+        if (oldProject.getSourceFiles().isEmpty()) {
+            throw new IllegalArgumentException("No Java files found in the first directory: " + this.directoryPaths.get(0));
+        }
+
+        scanner = new DirectoryScanner(this.directoryPaths.get(1));
+        JavaProject newProject = scanner.scanProject();
+
+        if (newProject.getSourceFiles().isEmpty()) {
+            throw new IllegalArgumentException("No Java files found in the second directory: " + this.directoryPaths.get(1));
+        }
+
+        projectstoAnalyze.add(oldProject);
+        projectstoAnalyze.add(newProject);
+        VersionComparator.compareVersions(projectstoAnalyze);
+        
+        for (JavaProject currentProject : projectstoAnalyze) {
             printHeader();
-            analyzeProject(project);
+            analyzeProject(currentProject);
         }
     }
 
