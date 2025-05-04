@@ -48,15 +48,17 @@ public class LOCCounter {
             System.err.println("Error while processing file: " + ioException.getMessage());
         }
 
-        return new SourceFile(
+        SourceFile sourceFile = new SourceFile(
             path.getFileName().toString(),
-            path.toString(),
-            physicalLOC,
-            numOfMethods,
-            0,
-            0,
-            Constants.JAVA_FILE_STATUS_OK
+            path.toString()
         );
+
+        sourceFile.setPhysicalLOC(physicalLOC);
+        sourceFile.setNumOfMethods(numOfMethods);
+        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_OK);
+
+        return sourceFile;
+
     }
 
     /**

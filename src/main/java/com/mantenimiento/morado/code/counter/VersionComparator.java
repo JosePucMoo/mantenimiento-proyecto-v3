@@ -1,8 +1,6 @@
 package com.mantenimiento.morado.code.counter;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,22 +15,20 @@ public class VersionComparator {
 
         Map<String, SourceFile> oldVersionFiles = new HashMap<>();
         for (SourceFile sourceFile : oldVersion.getSourceFiles()) {
-            oldVersionFiles.put(sourceFile.filename(), sourceFile);
+            oldVersionFiles.put(sourceFile.getFilename(), sourceFile);
         }
 
         for (SourceFile newFile : newVersion.getSourceFiles()) {
-            String newfilename = newFile.filename();
+            String newfilename = newFile.getFilename();
             if (oldVersionFiles.containsKey(newfilename)) {
                 SourceFile oldFile = oldVersionFiles.get(newfilename);
                 try {
-                    List<String> oldCodeLinesFile = SourceFile.getAllLinesFromFile(oldFile.filePath());
-                    List<String> newCodeLinesFile = SourceFile.getAllLinesFromFile(newFile.filePath());
-                    int numDeletedLines = DeletedLinesCounter.count(
-                        oldCodeLinesFile, 
-                        newCodeLinesFile,
-                        oldFile.filename()
+                    DeletedLinesAnalyzer deletedLinesAnlayzer = new DeletedLinesAnalyzer(
+                        SourceFile.getAllLinesFromFile(oldFile.getFilePath()), 
+                        SourceFile.getAllLinesFromFile(newFile.getFilePath())
                     );
-                    oldFile = DeletedLinesCounter.createSourceFilewithDeletedLines(oldFile.filePath(), numDeletedLines);
+                    deletedLinesAnlayzer.markAndWriteDeleted(oldFile.getFilename());
+                    oldFile.setDeletedLines(deletedLinesAnlayzer.getDeletedLineCount());
                 } catch (IOException ioException) {
                     System.out.println("Error while reading file: " + ioException.getMessage());
                 }

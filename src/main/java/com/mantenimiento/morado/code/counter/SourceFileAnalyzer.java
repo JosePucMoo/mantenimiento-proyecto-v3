@@ -105,11 +105,11 @@ public class SourceFileAnalyzer {
      * @throws NullPointerException if file is null
      */
     private SourceFile analyzeFile(SourceFile file) {
-        String filePath = file.filePath();
+        String filePath = file.getFilePath();
         if (SyntaxAnalyzer.isJavaFileWellWritten(filePath)) {
             SourceFile countedFile = LOCCounter.countLOC(filePath);
             if (!SyntaxAnalyzer.isClassJavaFile(filePath)) {
-                return getNoClassFile(filePath, countedFile.physicalLOC());
+                return getNoClassFile(filePath, countedFile.getPhysicalLOC());
             }
             return countedFile;
         } else {
@@ -141,11 +141,11 @@ public class SourceFileAnalyzer {
         System.out.printf(
             "%-18s %-30s %-18s %-18s %-18s %-10s%n",
             directoryName,
-            file.filename().replaceFirst("\\.java$", ""),
-            file.numOfMethods(),
-            file.physicalLOC(),
+            file.getFilename().replaceFirst("\\.java$", ""),
+            file.getNumOfMethods(),
+            file.getPhysicalLOC(),
             "",
-            file.status()
+            file.getStatus()
         );
     }
 
@@ -195,16 +195,12 @@ public class SourceFileAnalyzer {
      */
     private SourceFile getBadSourceFile(String filepath) {
         Path file = Paths.get(filepath);
-
-        return new SourceFile(
+        SourceFile sourceFile = new SourceFile(
             file.getFileName().toString(),
-            file.toString(),
-            0,
-            0,
-            0,
-            0,
-            Constants.JAVA_FILE_STATUS_ERROR
+            file.toString()
         );
+        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_ERROR);
+        return sourceFile;
     }
 
     /**
@@ -216,16 +212,13 @@ public class SourceFileAnalyzer {
      */
     private SourceFile getNoClassFile(String filepath, int physicalLOC) {
         Path file = Paths.get(filepath);
-
-        return new SourceFile(
+        SourceFile sourceFile = new SourceFile(
             file.getFileName().toString(),
-            file.toString(),
-            physicalLOC,
-            0,
-            0,
-            0,
-            Constants.JAVA_FILE_STATUS_NO_CLASS
+            file.toString()
         );
+        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_NO_CLASS);
+        sourceFile.setPhysicalLOC(physicalLOC);
+        return sourceFile;
     }
 
 }

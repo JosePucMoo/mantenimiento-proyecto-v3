@@ -91,7 +91,7 @@ public final class JavaProject {
      */
     public int getTotalPhysicalLOC() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::physicalLOC)
+                .mapToInt(SourceFile::getPhysicalLOC)
                 .sum();
     }
 
@@ -102,7 +102,7 @@ public final class JavaProject {
      */
     public int getTotalMethods() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::numOfMethods)
+                .mapToInt(SourceFile::getNumOfMethods)
                 .sum();
     }
 
@@ -114,7 +114,7 @@ public final class JavaProject {
      */
     public int getTotalAddedLines() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::addedLines)
+                .mapToInt(SourceFile::getAddedLines)
                 .sum();
     }
 
@@ -126,7 +126,7 @@ public final class JavaProject {
      */
     public int getTotalDeletedLines() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::deletedLines)
+                .mapToInt(SourceFile::getDeletedLines)
                 .sum();
     }
 
