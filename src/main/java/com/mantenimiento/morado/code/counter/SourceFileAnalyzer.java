@@ -8,6 +8,7 @@ import com.mantenimiento.morado.code.model.JavaProject;
 import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.code.syntax.SyntaxAnalyzer;
 import com.mantenimiento.morado.util.Constants;
+import com.mantenimiento.morado.util.ResultsTablePrinter;
 
 /**
  * Analyzes Java source files in a given directory by scanning for files,
@@ -57,8 +58,7 @@ public class SourceFileAnalyzer {
                 System.out.println("No Java files found in: " + directoryPath);
                 continue;
             }
-            
-            printHeader();
+            ResultsTablePrinter.printHeader();
             analyzeProject(project);
         }
     }
@@ -75,12 +75,12 @@ public class SourceFileAnalyzer {
             SourceFile analyzedFile = analyzeFile(file);
             project.updateSourceFile(index, analyzedFile);
             index++;
-            printDetails(analyzedFile, project.getProjectName());
+            ResultsTablePrinter.printDetails(analyzedFile, project.getProjectName());
         }
 
         int totalPhysicalLOC = project.getTotalPhysicalLOC();
         if (totalPhysicalLOC > 0) {
-            printTotalProyectLOC(totalPhysicalLOC + "");
+            ResultsTablePrinter.printTotalProyectLOC(totalPhysicalLOC + "");
         }
     }
 
@@ -103,74 +103,6 @@ public class SourceFileAnalyzer {
             return getBadSourceFile(filePath);
         }
     }
-
-    /**
-     * Prints the header for the LOC analysis results table.
-     * <p>
-     * The header includes the columns: "Program", "Logical LOC", "Physical LOC", and "Status".
-     * </p>
-     */
-    private void printHeader() {
-        System.out.printf("%-18s %-30s %-18s %-18s %-18s %-10s%n", "Program", "Class", "Number of methods", "Physical LOC", "Total physical LOC", "Status");
-        System.out.println("---------------------------------------------------------------------------------------------------------------------------");
-    }
-
-    /**
-     * Prints the details of a Java source file.
-     * <p>
-     * The details include the file name, logical LOC, physical LOC, and status.
-     * </p>
-     * @param file the {@link SourceFile} object containing the filename, logical LOC,
-     *             physical LOC, and status to be printed
-     * @see SourceFile
-     */
-    private void printDetails(SourceFile file, String directoryName) {
-        System.out.printf(
-            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
-            directoryName,
-            file.filename().replaceFirst("\\.java$", ""),
-            file.numOfMethods(),
-            file.physicalLOC(),
-            "",
-            file.status()
-        );
-    }
-
-    /**
-     * Prints the total physical lines of code (LOC) of a program in a formatted table.
-     * 
-     * @param totalPhysicalLOC The total number of physical LOC to print.
-     */
-    private void printTotalProgramLOC(String totalPhysicalLOC) {
-        System.out.printf(
-            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
-            "",
-            "",
-            "",
-            "",
-            totalPhysicalLOC,
-            ""
-        );
-    }
-
-    /**
-     * Prints the total physical lines of code (LOC) of a proyect in a formatted table.
-     * 
-     * @param totalPhysicalLOC The total number of physical LOC to print.
-     */
-    private void printTotalProyectLOC(String totalPhysicalLOC) {
-        System.out.println("---------------------------------------------------------------------------------------------------------------------------");
-        System.out.printf(
-            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
-            "Total Lines",
-            "",
-            "",
-            "",
-            totalPhysicalLOC,
-            ""
-        );
-    }
-
 
     /**
      * Creates a {@code SourceFile} object representing a Java file that failed syntax analysis.

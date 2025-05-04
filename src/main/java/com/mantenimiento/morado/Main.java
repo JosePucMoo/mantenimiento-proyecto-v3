@@ -12,7 +12,7 @@ public class Main {
         } */
         
         List<String> directoryPaths = List.of(
-            "C:/Users/Lenovo/Documents/OctavoSemestre/Mantenimiento/proyecto/mantenimiento-proyecto-v2/locproject/src/main/java/com/example/locproject/utils"
+            "C:\\Users\\josep\\OneDrive\\Escritorio\\mantenimiento-proyecto-v3\\src\\main\\java\\com\\mantenimiento\\morado"
         );
         SourceFileAnalyzer analyzer = new SourceFileAnalyzer(directoryPaths);
         analyzer.analyzePath();
