@@ -129,16 +129,4 @@ public final class JavaProject {
                 .mapToInt(SourceFile::getDeletedLines)
                 .sum();
     }
-
-    /**
-     * Updates the source file at the specified position in the list.
-     *
-     * @param index the index of the source file to replace (0-based)
-     * @param newFile the new SourceFile to set at the specified position (cannot be null)
-     * @throws NullPointerException if newFile is null
-     * @throws IndexOutOfBoundsException if the index is out of range
-     */
-    public void updateSourceFile(int index, SourceFile newFile) {
-        this.sourceFiles.set(index, Objects.requireNonNull(newFile, "Source file cannot be null"));
-    }
 }
