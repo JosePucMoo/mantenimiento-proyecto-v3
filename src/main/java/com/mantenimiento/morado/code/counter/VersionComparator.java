@@ -24,8 +24,8 @@ public class VersionComparator {
                 SourceFile oldFile = oldVersionFiles.get(newfilename);
                 try {
                     DeletedLinesAnalyzer deletedLinesAnlayzer = new DeletedLinesAnalyzer(
-                        SourceFile.getAllLinesFromFile(oldFile.getFilePath()), 
-                        SourceFile.getAllLinesFromFile(newFile.getFilePath())
+                        oldFile.getAllLinesFromFile(), 
+                        newFile.getAllLinesFromFile()
                     );
                     deletedLinesAnlayzer.markAndWriteDeleted(oldFile.getFilename());
                     oldFile.setDeletedLines(deletedLinesAnlayzer.getDeletedLineCount());

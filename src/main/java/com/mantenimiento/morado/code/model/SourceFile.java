@@ -55,8 +55,8 @@ public class SourceFile {
      * @return a {@code List<String>} containing all lines from the file
      * @throws IOException if an I/O error occurs reading from the file or a malformed or unmappable byte sequence is read
      */
-    public static List<String> getAllLinesFromFile(String filepath) throws IOException {
-        return Files.readAllLines(Paths.get(filepath));
+    public List<String> getAllLinesFromFile() throws IOException {
+        return Files.readAllLines(Paths.get(this.filePath));
     }
 
     // Getters

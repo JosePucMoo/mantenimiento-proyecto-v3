@@ -12,8 +12,10 @@ public class Main {
         } */
         
         List<String> directoryPaths = List.of(
-            "C:/Users/Lenovo/Documents/OctavoSemestre/Mantenimiento/proyecto/mantenimiento-proyecto-v3/oldVersion",
-            "C:/Users/Lenovo/Documents/OctavoSemestre/Mantenimiento/proyecto/mantenimiento-proyecto-v3/newVersion"
+            /* "C:/Users/Lenovo/Documents/OctavoSemestre/Mantenimiento/proyecto/mantenimiento-proyecto-v3/oldVersion",
+            "C:/Users/Lenovo/Documents/OctavoSemestre/Mantenimiento/proyecto/mantenimiento-proyecto-v3/newVersion" */
+            "C:\\Users\\Lenovo\\Documents\\OctavoSemestre\\Mantenimiento\\proyecto\\mantenimiento-proyecto-v3\\src\\main\\java\\com\\mantenimiento\\morado",
+            "C:\\\\Users\\\\Lenovo\\\\Documents\\\\OctavoSemestre\\\\Mantenimiento\\\\proyecto\\\\mantenimiento-proyecto-v3\\\\src\\\\main\\\\java\\\\com\\\\mantenimiento\\\\morado"
         );
         SourceFileAnalyzer analyzer = new SourceFileAnalyzer(directoryPaths);
         analyzer.analyzePath();
