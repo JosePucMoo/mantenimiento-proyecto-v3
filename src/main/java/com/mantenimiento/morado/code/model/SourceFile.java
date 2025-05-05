@@ -19,6 +19,7 @@ import java.util.List;
  * @version 2.1.0
  *
  * @param filename      the name of the source file
+ * @param filePath      the path of the source file
  * @param physicalLOC   the number of physical lines of code in the file
  * @param numOfMethods  the number of methods in the file
  * @param addedLines    the number of lines added to the file
@@ -27,6 +28,7 @@ import java.util.List;
  */
 public record SourceFile(
     String filename,
+    String filePath,
     int physicalLOC,
     int numOfMethods,
     int addedLines,
