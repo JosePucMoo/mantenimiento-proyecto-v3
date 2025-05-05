@@ -78,12 +78,14 @@ public abstract class LinesAnalyzer {
      * @param tag            the {@link LineTag} to append to each marked line
      */
     protected void markAndWriteLines(String outputFileName, LineTag tag) {
+        List<String> currentLinesCleaned = 
+            (tag.getTag() == LineTag.DELETED.getTag()) ? oldLinesCleaned : newLinesCleaned;
         for (int idx : positionsToMark) {
-            String original = oldLinesCleaned.get(idx);
-            oldLinesCleaned.set(idx, original + tag.getTag());
+            String original = currentLinesCleaned.get(idx);
+            currentLinesCleaned.set(idx, original + tag.getTag());
         }
         FileHelper.writeLinesByTag(
-            oldLinesCleaned,
+            currentLinesCleaned,
             outputFileName,
             tag.name().toLowerCase()
         );
