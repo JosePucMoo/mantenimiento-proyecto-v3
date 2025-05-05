@@ -40,7 +40,7 @@ public final class LineSimilarityUtil {
      * @param newLine the updated line
      * @return similarity ratio between 0.0 and 1.0
      */
-    private static double calculateSimilarity(String oldLine, String newLine) {
+    public static double calculateSimilarity(String oldLine, String newLine) {
         
         LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
 

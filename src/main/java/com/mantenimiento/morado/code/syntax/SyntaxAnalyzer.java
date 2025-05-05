@@ -42,13 +42,13 @@ public class SyntaxAnalyzer {
      * If any of these conditions are met, the file is deemed not well-written.
      * </p>
      *
-     * @param filepath the path of the Java file to analyze
+     * @param sourceFile the the Java file to analyze
      * @return {@code true} if the file is considered well-written; {@code false} otherwise
      */
-    public static boolean isJavaFileWellWritten(String filepath) {
+    public static boolean isJavaFileWellWritten(SourceFile sourceFile) {
 
         try {
-            List<String> codeLines = SourceFile.getAllLinesFromFile(filepath);
+            List<String> codeLines = sourceFile.getAllLinesFromFile();
 
             if (hasMultiInstance(codeLines)) {
                 return false;
@@ -92,14 +92,13 @@ public class SyntaxAnalyzer {
     /**
      * Checks if a given Java file contains a class definition.
      * It reads the file line by line and looks for the presence of a class declaration.
-     * 
-     * @param filepath The path to the Java file to check.
+     * @param sourceFile the the Java file to analyze
      * @return {@code true} if the file contains a class, {@code false} otherwise.
      */
-    public static boolean isClassJavaFile(String filepath) {
+    public static boolean isClassJavaFile(SourceFile sourceFile) {
 
         try {
-            List<String> codeLines = SourceFile.getAllLinesFromFile(filepath);
+            List<String> codeLines = sourceFile.getAllLinesFromFile();
 
             for (String line : codeLines) {
                 String trimmedLine = line.trim();
