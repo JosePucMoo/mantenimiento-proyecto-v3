@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.mantenimiento.morado.util.FileHelper;
+import com.mantenimiento.morado.util.LineSimilarityUtil;
 import com.mantenimiento.morado.code.model.LineTag;
 
 /**
@@ -82,15 +83,24 @@ public abstract class LinesAnalyzer {
      * @param tag            the {@link LineTag} to append to each marked line
      */
     protected void markAndWriteLines(String outputFileName, LineTag tag) {
-        List<String> currentLinesCleaned = 
-            (tag.getTag() == LineTag.DELETED.getTag()) ? oldLinesCleaned : newLinesCleaned;
+        
+        List<String> targetLines = 
+            (tag == LineTag.DELETED) ? oldLinesCleaned : newLinesCleaned;
+
         for (int idx : positionsToMark) {
-            String original = currentLinesCleaned.get(idx);
-            currentLinesCleaned.set(idx, original + tag.getTag());
+            String original = targetLines.get(idx);
+            LineTag tagToApply = tag;
+            if (tag == LineTag.ADDED && idx < oldLinesCleaned.size()) {
+                boolean modified = LineSimilarityUtil.isModified(
+                    oldLinesCleaned.get(idx), newLinesCleaned.get(idx)
+                );
+                tagToApply = modified ? LineTag.MODIFIED : LineTag.ADDED;
+            }
+            targetLines.set(idx, original + " " + tagToApply.getTag());
         }
         FileHelper.writeLinesByTag(
-            currentLinesCleaned,
-            outputFileName,
+            targetLines, 
+            outputFileName, 
             tag.name().toLowerCase()
         );
     }
