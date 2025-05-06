@@ -1,8 +1,6 @@
 package com.mantenimiento.morado.code.counter;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import com.mantenimiento.morado.code.model.SourceFile;

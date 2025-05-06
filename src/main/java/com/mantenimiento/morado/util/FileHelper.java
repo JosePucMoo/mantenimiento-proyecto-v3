@@ -41,18 +41,11 @@ public class FileHelper {
      * @throws IllegalArgumentException if the tag is not {@code "deleted"} or {@code "added"}
      */
     public static void writeLinesByTag(List<String> lines, String fileName, String tag) {
-        String subfolder;
-
-        switch (tag) {
-            case "deleted" -> {
-                subfolder = REMOVED_FOLDER;
-            }
-            case "added" -> {
-                subfolder = ADDED_FOLDER;
-            }
-            default -> throw new IllegalArgumentException("Invalid tag. Use 'deleted' or 'added'.");
-        }
-
+        String subfolder = switch (tag) {
+            case "deleted" -> REMOVED_FOLDER;
+            case "added"   -> ADDED_FOLDER;
+            default -> throw new IllegalArgumentException("Invalid tag: use 'deleted' or 'added'.");
+        };
         writeToSubfolder(lines, subfolder, fileName);
     }
 

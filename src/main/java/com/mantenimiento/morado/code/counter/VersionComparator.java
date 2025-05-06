@@ -9,7 +9,8 @@ import com.mantenimiento.morado.code.model.JavaProject;
 import com.mantenimiento.morado.code.model.SourceFile;
 
 public class VersionComparator {
-    public static void compareVersions(List<JavaProject> projectsToCompare){
+
+    public static void compareVersions(List<JavaProject> projectsToCompare) {
         JavaProject oldVersion = projectsToCompare.get(0);
         JavaProject newVersion = projectsToCompare.get(1);
 
@@ -22,17 +23,28 @@ public class VersionComparator {
             String newfilename = newFile.getFilename();
             if (oldVersionFiles.containsKey(newfilename)) {
                 SourceFile oldFile = oldVersionFiles.get(newfilename);
-                try {
-                    DeletedLinesAnalyzer deletedLinesAnlayzer = new DeletedLinesAnalyzer(
-                        oldFile.getAllLinesFromFile(), 
-                        newFile.getAllLinesFromFile()
-                    );
-                    deletedLinesAnlayzer.markAndWriteDeleted(oldFile.getFilename());
-                    oldFile.setDeletedLines(deletedLinesAnlayzer.getDeletedLineCount());
-                } catch (IOException ioException) {
-                    System.out.println("Error while reading file: " + ioException.getMessage());
-                }
+                processFileComparison(oldFile, newFile);
             }
+        }
+    }
+
+    private static void processFileComparison(SourceFile oldFile, SourceFile newFile) {
+        try {
+
+            DeletedLinesAnalyzer deleteAnalyzer = new DeletedLinesAnalyzer(
+                oldFile.getAllLinesFromFile(), newFile.getAllLinesFromFile()
+            );
+            deleteAnalyzer.markAndWriteDeleted(oldFile.getFilename());
+            oldFile.setDeletedLines(deleteAnalyzer.getDeletedLineCount());
+
+            AddedLinesAnalyzer addAnalyzer = new AddedLinesAnalyzer(
+                oldFile.getAllLinesFromFile(), newFile.getAllLinesFromFile()
+            );
+            addAnalyzer.markAndWriteAdded(newFile.getFilename());
+            newFile.setAddedLines(addAnalyzer.getAddedLineCount());
+
+        } catch (IOException ioException) {
+            System.out.println("Error while reading file: " + ioException.getMessage());
         }
     }
 }

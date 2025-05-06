@@ -1,6 +1,7 @@
 package com.mantenimiento.morado.code.counter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.mantenimiento.morado.util.FileHelper;
@@ -37,13 +38,16 @@ public abstract class LinesAnalyzer {
      * @return cleaned list of lines
      */
     private List<String> cleanLines(List<String> lines) {
-        return lines.stream()
-            .map(String::trim)
-            .filter(l -> !l.isEmpty())
-            .filter(l -> !l.startsWith("//"))
-            .filter(l -> !l.startsWith("/*") && !l.startsWith("*") && !l.endsWith("*/"))
-            .collect(Collectors.toList());
+        String joined = String.join("\n", lines);
+        joined = joined.replaceAll("(?s)/\\*.*?\\*/", "");
+        String[] split = joined.split("\\R");
+    
+        return Arrays.stream(split)
+                     .filter(l -> !l.startsWith("//"))
+                     .filter(l -> !l.trim().isEmpty())
+                     .collect(Collectors.toList());
     }
+    
 
     /**
      * Abstract method to be implemented by subclasses to define how positions to mark are detected.
