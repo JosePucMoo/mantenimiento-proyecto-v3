@@ -21,13 +21,13 @@ import java.util.List;
 public class FileHelper {
 
     /** Root folder where comparison result files are stored. */
-    private static final String ROOT_FOLDER = "comparison_results";
+    public static final String ROOT_FOLDER = "comparison_results";
 
     /** Subfolder for lines that were removed (tag: "deleted"). */
-    private static final String REMOVED_FOLDER = "deleted_lines";
+    public static final String REMOVED_FOLDER = "deleted_lines";
 
     /** Subfolder for lines that were added (tag: "added"). */
-    private static final String ADDED_FOLDER = "added_lines";
+    public static final String ADDED_FOLDER = "added_lines";
 
     /**
      * Writes the given lines to a file within a subfolder, determined by the tag.
@@ -41,18 +41,11 @@ public class FileHelper {
      * @throws IllegalArgumentException if the tag is not {@code "deleted"} or {@code "added"}
      */
     public static void writeLinesByTag(List<String> lines, String fileName, String tag) {
-        String subfolder;
-
-        switch (tag) {
-            case "deleted" -> {
-                subfolder = REMOVED_FOLDER;
-            }
-            case "added" -> {
-                subfolder = ADDED_FOLDER;
-            }
-            default -> throw new IllegalArgumentException("Invalid tag. Use 'deleted' or 'added'.");
-        }
-
+        String subfolder = switch (tag) {
+            case "deleted" -> REMOVED_FOLDER;
+            case "added"   -> ADDED_FOLDER;
+            default -> throw new IllegalArgumentException("Invalid tag: use 'deleted' or 'added'.");
+        };
         writeToSubfolder(lines, subfolder, fileName);
     }
 
@@ -69,10 +62,6 @@ public class FileHelper {
     private static void writeToSubfolder(List<String> lines, String subfolder, String outputFileName) {
         try {
             Path dir = Paths.get(ROOT_FOLDER, subfolder);
-            
-            if (Files.exists(dir)) {
-                deleteDirectoryRecursively(dir);
-            }
 
             Files.createDirectories(dir);
 
@@ -90,7 +79,7 @@ public class FileHelper {
      * @param path the path to the directory to delete
      * @throws IOException if an I/O error occurs during deletion
      */
-    private static void deleteDirectoryRecursively(Path path) throws IOException {
+    public static void deleteDirectoryRecursively(Path path) throws IOException {
         if (Files.exists(path)) {
             Files.walk(path)
                 .sorted(Comparator.reverseOrder())

@@ -1,9 +1,11 @@
 package com.mantenimiento.morado.code.counter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.mantenimiento.morado.util.FileHelper;
+import com.mantenimiento.morado.util.LineSimilarityUtil;
 import com.mantenimiento.morado.code.model.LineTag;
 
 /**
@@ -37,13 +39,24 @@ public abstract class LinesAnalyzer {
      * @return cleaned list of lines
      */
     private List<String> cleanLines(List<String> lines) {
-        return lines.stream()
-            .map(String::trim)
-            .filter(l -> !l.isEmpty())
-            .filter(l -> !l.startsWith("//"))
-            .filter(l -> !l.startsWith("/*") && !l.startsWith("*") && !l.endsWith("*/"))
-            .collect(Collectors.toList());
+        // Join the lines into a single string
+        String joined = String.join("\n", lines);
+    
+        // Remove block comments (/* ... */)
+        joined = joined.replaceAll("(?s)/\\*.*?\\*/", "");
+    
+        // Remove line comments (// ...) that might be after code
+        joined = joined.replaceAll("//.*", "");
+    
+        // Split the text into lines
+        String[] split = joined.split("\\R");
+    
+        // Filter out empty lines and lines with only spaces
+        return Arrays.stream(split)
+                     .filter(l -> !l.trim().isEmpty()) // Remove empty lines or lines with only spaces
+                     .collect(Collectors.toList());
     }
+    
 
     /**
      * Abstract method to be implemented by subclasses to define how positions to mark are detected.
@@ -78,15 +91,24 @@ public abstract class LinesAnalyzer {
      * @param tag            the {@link LineTag} to append to each marked line
      */
     protected void markAndWriteLines(String outputFileName, LineTag tag) {
-        List<String> currentLinesCleaned = 
-            (tag.getTag() == LineTag.DELETED.getTag()) ? oldLinesCleaned : newLinesCleaned;
+        
+        List<String> targetLines = 
+            (tag == LineTag.DELETED) ? oldLinesCleaned : newLinesCleaned;
+
         for (int idx : positionsToMark) {
-            String original = currentLinesCleaned.get(idx);
-            currentLinesCleaned.set(idx, original + tag.getTag());
+            String original = targetLines.get(idx);
+            LineTag tagToApply = tag;
+            if (tag == LineTag.ADDED && idx < oldLinesCleaned.size()) {
+                boolean modified = LineSimilarityUtil.isModified(
+                    oldLinesCleaned.get(idx), newLinesCleaned.get(idx)
+                );
+                tagToApply = modified ? LineTag.MODIFIED : LineTag.ADDED;
+            }
+            targetLines.set(idx, original + " " + tagToApply.getTag());
         }
         FileHelper.writeLinesByTag(
-            currentLinesCleaned,
-            outputFileName,
+            targetLines, 
+            outputFileName, 
             tag.name().toLowerCase()
         );
     }
