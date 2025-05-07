@@ -37,12 +37,21 @@ public class VersionComparator {
             if (oldVersionFiles.containsKey(newfilename)) {
                 SourceFile oldFile = oldVersionFiles.get(newfilename);
                 processFileComparison(oldFile, newFile);
+                oldVersionFiles.remove(newfilename);
             } else {
                 try {
                     processAddedLines(null, newFile);
                 } catch (IOException ioException) {
                     System.out.println("Error while reading file: " + ioException.getMessage());
                 }
+            }
+        }
+
+        for (SourceFile oldSourceFile : oldVersionFiles.values()) {
+            try {
+                processDeletedLines(oldSourceFile, null);
+            } catch (IOException ioException) {
+                System.out.println("Error while reading file: " + ioException.getMessage());
             }
         }
     }
@@ -70,12 +79,13 @@ public class VersionComparator {
      * in the {@link SourceFile} representing the old version.
      *
      * @param oldFile The {@link SourceFile} from the old version.
-     * @param newFile The {@link SourceFile} from the new version.
+     * @param newFile The {@link SourceFile} from the new version or {@code null} if not available.
      * @throws IOException if there is an error reading from or writing to the files.
      */
     private static void processDeletedLines(SourceFile oldFile, SourceFile newFile) throws IOException {
+        List<String> newLines = (newFile != null) ? newFile.getAllLinesFromFile() : Collections.emptyList();
         DeletedLinesAnalyzer deleteAnalyzer = new DeletedLinesAnalyzer(
-            oldFile.getAllLinesFromFile(), newFile.getAllLinesFromFile()
+            oldFile.getAllLinesFromFile(), newLines
         );
         deleteAnalyzer.markAndWriteDeleted(oldFile.getFilename());
         oldFile.setDeletedLines(deleteAnalyzer.getDeletedLineCount());
