@@ -39,13 +39,21 @@ public abstract class LinesAnalyzer {
      * @return cleaned list of lines
      */
     private List<String> cleanLines(List<String> lines) {
+        // Join the lines into a single string
         String joined = String.join("\n", lines);
+    
+        // Remove block comments (/* ... */)
         joined = joined.replaceAll("(?s)/\\*.*?\\*/", "");
+    
+        // Remove line comments (// ...) that might be after code
+        joined = joined.replaceAll("//.*", "");
+    
+        // Split the text into lines
         String[] split = joined.split("\\R");
     
+        // Filter out empty lines and lines with only spaces
         return Arrays.stream(split)
-                     .filter(l -> !l.startsWith("//"))
-                     .filter(l -> !l.trim().isEmpty())
+                     .filter(l -> !l.trim().isEmpty()) // Remove empty lines or lines with only spaces
                      .collect(Collectors.toList());
     }
     

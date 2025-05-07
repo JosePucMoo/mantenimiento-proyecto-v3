@@ -1,6 +1,7 @@
 package com.mantenimiento.morado.code.counter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,35 +37,66 @@ public class VersionComparator {
             if (oldVersionFiles.containsKey(newfilename)) {
                 SourceFile oldFile = oldVersionFiles.get(newfilename);
                 processFileComparison(oldFile, newFile);
+            } else {
+                try {
+                    processAddedLines(null, newFile);
+                } catch (IOException ioException) {
+                    System.out.println("Error while reading file: " + ioException.getMessage());
+                }
             }
         }
     }
 
     /**
      * Compares a single source file from the old and new versions to find added and deleted lines.
-     * It uses {@link DeletedLinesAnalyzer} and {@link AddedLinesAnalyzer} to perform the comparison
-     * and mark the lines in output files. It also updates the added and deleted line counts in
-     * the respective {@link SourceFile} objects.
+     * It delegates the comparison to helper methods that analyze deleted and added lines separately.
+     * It updates the line counts in the respective {@link SourceFile} objects.
      *
      * @param oldFile The {@link SourceFile} from the old version.
      * @param newFile The {@link SourceFile} from the new version.
      */
     private static void processFileComparison(SourceFile oldFile, SourceFile newFile) {
         try {
-            DeletedLinesAnalyzer deleteAnalyzer = new DeletedLinesAnalyzer(
-                oldFile.getAllLinesFromFile(), newFile.getAllLinesFromFile()
-            );
-            deleteAnalyzer.markAndWriteDeleted(oldFile.getFilename());
-            oldFile.setDeletedLines(deleteAnalyzer.getDeletedLineCount());
-
-            AddedLinesAnalyzer addAnalyzer = new AddedLinesAnalyzer(
-                oldFile.getAllLinesFromFile(), newFile.getAllLinesFromFile()
-            );
-            addAnalyzer.markAndWriteAdded(newFile.getFilename());
-            newFile.setAddedLines(addAnalyzer.getAddedLineCount());
-
+            processDeletedLines(oldFile, newFile);
+            processAddedLines(oldFile, newFile);
         } catch (IOException ioException) {
             System.out.println("Error while reading file: " + ioException.getMessage());
         }
     }
+
+    /**
+     * Analyzes and marks deleted lines by comparing the content of the old and new files.
+     * Writes the marked deleted lines to the output file and updates the deleted line count
+     * in the {@link SourceFile} representing the old version.
+     *
+     * @param oldFile The {@link SourceFile} from the old version.
+     * @param newFile The {@link SourceFile} from the new version.
+     * @throws IOException if there is an error reading from or writing to the files.
+     */
+    private static void processDeletedLines(SourceFile oldFile, SourceFile newFile) throws IOException {
+        DeletedLinesAnalyzer deleteAnalyzer = new DeletedLinesAnalyzer(
+            oldFile.getAllLinesFromFile(), newFile.getAllLinesFromFile()
+        );
+        deleteAnalyzer.markAndWriteDeleted(oldFile.getFilename());
+        oldFile.setDeletedLines(deleteAnalyzer.getDeletedLineCount());
+    }
+
+    /**
+     * Analyzes and marks added lines by comparing the content of the old and new files.
+     * Writes the marked added lines to the output file and updates the added line count
+     * in the {@link SourceFile} representing the new version.
+     *
+     * @param oldFile The {@link SourceFile} from the old version or {@code null} if not available.
+     * @param newFile The {@link SourceFile} from the new version.
+     * @throws IOException if there is an error reading from or writing to the files.
+     */
+    private static void processAddedLines(SourceFile oldFile, SourceFile newFile) throws IOException {
+        List<String> oldLines = (oldFile != null) ? oldFile.getAllLinesFromFile() : Collections.emptyList();
+        AddedLinesAnalyzer addAnalyzer = new AddedLinesAnalyzer(
+            oldLines, newFile.getAllLinesFromFile()
+        );
+        addAnalyzer.markAndWriteAdded(newFile.getFilename());
+        newFile.setAddedLines(addAnalyzer.getAddedLineCount());
+    }
+
 }
