@@ -1,8 +1,6 @@
 package com.mantenimiento.morado.code.counter;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import com.mantenimiento.morado.code.model.SourceFile;
@@ -33,30 +31,21 @@ public class LOCCounter {
      * Counts the physical and class method lines of code in the specified file and
      * creates a {@code SourceFile} object with the file's name, LOC counts, and status.
      *
-     * @param filePath The path of the Java source file to be analyzed.
-     * @return A {@code SourceFile} object containing the file's name, logical LOC,
+     * @param sourceFile The Java source file to be analyzed.
      * number of methods and the Java file status constant from {@link Constants}.
      */
-    public static SourceFile countLOC(String filePath) {
-        Path path = Paths.get(filePath);
-
+    public static void countLOC(SourceFile sourceFile) {
         try {
-            List<String> codeLines = SourceFile.getAllLinesFromFile(filePath);
+            List<String> codeLines = sourceFile.getAllLinesFromFile();
             setPhysicalLOC(countPhysicalLOC(codeLines));
             setNumOfMethods(countNumOfMethods(codeLines));
         } catch (IOException ioException) {
             System.err.println("Error while processing file: " + ioException.getMessage());
         }
 
-        return new SourceFile(
-            path.getFileName().toString(),
-            path.toString(),
-            physicalLOC,
-            numOfMethods,
-            0,
-            0,
-            Constants.JAVA_FILE_STATUS_OK
-        );
+        sourceFile.setPhysicalLOC(physicalLOC);
+        sourceFile.setNumOfMethods(numOfMethods);
+        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_OK);
     }
 
     /**

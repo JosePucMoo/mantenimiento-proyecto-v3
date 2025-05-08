@@ -91,7 +91,7 @@ public final class JavaProject {
      */
     public int getTotalPhysicalLOC() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::physicalLOC)
+                .mapToInt(SourceFile::getPhysicalLOC)
                 .sum();
     }
 
@@ -102,7 +102,7 @@ public final class JavaProject {
      */
     public int getTotalMethods() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::numOfMethods)
+                .mapToInt(SourceFile::getNumOfMethods)
                 .sum();
     }
 
@@ -114,7 +114,7 @@ public final class JavaProject {
      */
     public int getTotalAddedLines() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::addedLines)
+                .mapToInt(SourceFile::getAddedLines)
                 .sum();
     }
 
@@ -126,19 +126,7 @@ public final class JavaProject {
      */
     public int getTotalDeletedLines() {
         return sourceFiles.stream()
-                .mapToInt(SourceFile::deletedLines)
+                .mapToInt(SourceFile::getDeletedLines)
                 .sum();
-    }
-
-    /**
-     * Updates the source file at the specified position in the list.
-     *
-     * @param index the index of the source file to replace (0-based)
-     * @param newFile the new SourceFile to set at the specified position (cannot be null)
-     * @throws NullPointerException if newFile is null
-     * @throws IndexOutOfBoundsException if the index is out of range
-     */
-    public void updateSourceFile(int index, SourceFile newFile) {
-        this.sourceFiles.set(index, Objects.requireNonNull(newFile, "Source file cannot be null"));
     }
 }

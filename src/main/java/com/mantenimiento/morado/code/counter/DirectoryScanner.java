@@ -63,12 +63,7 @@ public class DirectoryScanner {
         Path path = Paths.get(filePath);
         return new SourceFile(
             path.getFileName().toString(),
-            path.toString(),
-            0,  // physicalLOC will be set later
-            0,  // numOfMethods will be set later
-            0,  // addedLines
-            0,  // deletedLines
-            ""  // status will be set later
+            path.toString()
         );
     }
 

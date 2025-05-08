@@ -2,6 +2,7 @@ package com.mantenimiento.morado.code.counter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mantenimiento.morado.code.model.JavaProject;
@@ -50,16 +51,29 @@ public class SourceFileAnalyzer {
      * @return void
      */
     public void analyzePath() {
-        for (String directoryPath : this.directoryPaths) {
-            DirectoryScanner scanner = new DirectoryScanner(directoryPath);
-            JavaProject project = scanner.scanProject();
-            
-            if (project.getSourceFiles().isEmpty()) {
-                System.out.println("No Java files found in: " + directoryPath);
-                continue;
-            }
-            ResultsTablePrinter.printHeader();
-            analyzeProject(project);
+        List<JavaProject> projectstoAnalyze = new ArrayList<>();
+
+        DirectoryScanner scanner = new DirectoryScanner(this.directoryPaths.get(0));
+        JavaProject oldProject = scanner.scanProject();
+
+        if (oldProject.getSourceFiles().isEmpty()) {
+            throw new IllegalArgumentException("No Java files found in the first directory: " + this.directoryPaths.get(0));
+        }
+
+        scanner = new DirectoryScanner(this.directoryPaths.get(1));
+        JavaProject newProject = scanner.scanProject();
+
+        if (newProject.getSourceFiles().isEmpty()) {
+            throw new IllegalArgumentException("No Java files found in the second directory: " + this.directoryPaths.get(1));
+        }
+
+        projectstoAnalyze.add(oldProject);
+        projectstoAnalyze.add(newProject);
+        VersionComparator.compareVersions(projectstoAnalyze);
+        
+        for (JavaProject currentProject : projectstoAnalyze) {
+            printHeader();
+            analyzeProject(currentProject);
         }
     }
 
@@ -70,12 +84,9 @@ public class SourceFileAnalyzer {
      * @throws NullPointerException if project is null
      */
     private void analyzeProject(JavaProject project) {
-        int index = 0;
         for (SourceFile file : project.getSourceFiles()) {
             SourceFile analyzedFile = analyzeFile(file);
-            project.updateSourceFile(index, analyzedFile);
-            index++;
-            ResultsTablePrinter.printDetails(analyzedFile, project.getProjectName());
+            printDetails(analyzedFile, project.getProjectName());
         }
 
         int totalPhysicalLOC = project.getTotalPhysicalLOC();
@@ -87,20 +98,19 @@ public class SourceFileAnalyzer {
     /**
      * Analyzes an individual source file, calculating metrics and validating syntax.
      *
-     * @param file the source file to analyze
+     * @param analyzeToFile the source file to analyze
      * @return a new SourceFile instance with updated metrics
      * @throws NullPointerException if file is null
      */
-    private SourceFile analyzeFile(SourceFile file) {
-        String filePath = file.filePath();
-        if (SyntaxAnalyzer.isJavaFileWellWritten(filePath)) {
-            SourceFile countedFile = LOCCounter.countLOC(filePath);
-            if (!SyntaxAnalyzer.isClassJavaFile(filePath)) {
-                return getNoClassFile(filePath, countedFile.physicalLOC());
+    private SourceFile analyzeFile(SourceFile analyzeToFile) {
+        if (SyntaxAnalyzer.isJavaFileWellWritten(analyzeToFile)) {
+            LOCCounter.countLOC(analyzeToFile);
+            if (!SyntaxAnalyzer.isClassJavaFile(analyzeToFile)) {
+                return getNoClassFile(analyzeToFile, analyzeToFile.getPhysicalLOC());
             }
-            return countedFile;
+            return analyzeToFile;
         } else {
-            return getBadSourceFile(filePath);
+            return getBadSourceFile(analyzeToFile);
         }
     }
 
@@ -109,21 +119,16 @@ public class SourceFileAnalyzer {
      * <p>
      * The returned object has zero logical and physical LOC and a status indicating an error.
      * </p>
-     * @param filepath the path to the Java file that is considered not well written
+     * @param sourceFile the Java file that is considered not well written
      * @return a {@link SourceFile} instance with error status
      */
-    private SourceFile getBadSourceFile(String filepath) {
-        Path file = Paths.get(filepath);
-
-        return new SourceFile(
-            file.getFileName().toString(),
-            file.toString(),
-            0,
-            0,
-            0,
-            0,
-            Constants.JAVA_FILE_STATUS_ERROR
-        );
+    private SourceFile getBadSourceFile(SourceFile sourceFile) {
+        sourceFile.setPhysicalLOC(0);
+        sourceFile.setNumOfMethods(0);
+        sourceFile.setAddedLines(0);
+        sourceFile.setDeletedLines(0);
+        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_ERROR);
+        return sourceFile;
     }
 
     /**
@@ -133,18 +138,13 @@ public class SourceFileAnalyzer {
      * @param filepath The path to the Java file.
      * @return A SourceFile object with a status of "no class".
      */
-    private SourceFile getNoClassFile(String filepath, int physicalLOC) {
-        Path file = Paths.get(filepath);
-
-        return new SourceFile(
-            file.getFileName().toString(),
-            file.toString(),
-            physicalLOC,
-            0,
-            0,
-            0,
-            Constants.JAVA_FILE_STATUS_NO_CLASS
-        );
+    private SourceFile getNoClassFile(SourceFile sourceFile, int physicalLOC) {
+        sourceFile.setPhysicalLOC(physicalLOC);
+        sourceFile.setNumOfMethods(0);
+        sourceFile.setAddedLines(0);
+        sourceFile.setDeletedLines(0);
+        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_NO_CLASS);
+        return sourceFile;
     }
 
 }
