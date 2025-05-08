@@ -72,11 +72,11 @@ public class ResultsTablePrinter {
         System.out.printf(
             COLUMN_FORMAT_TEMPLATE,
             directoryName,
-            file.filename().replaceFirst("\\.java$", ""),
-            file.numOfMethods(),
-            file.physicalLOC(),
+            file.getFilename().replaceFirst("\\.java$", ""),
+            file.getNumOfMethods(),
+            file.getPhysicalLOC(),
             "",
-            file.status()
+            file.getStatus()
         );
     }
 

@@ -15,8 +15,19 @@ public class Main {
         } */
         
         List<String> directoryPaths = List.of(
-            "C:\\Users\\josep\\OneDrive\\Escritorio\\mantenimiento-proyecto-v3\\src\\main\\java\\com\\mantenimiento\\morado"
+            "C:\\Users\\josep\\OneDrive\\Escritorio\\mantenimiento-proyecto-v3\\oldVersion",
+            "C:\\Users\\josep\\OneDrive\\Escritorio\\mantenimiento-proyecto-v3\\newVersion" 
         );
+
+        try {
+            Path dir = Paths.get(FileHelper.ROOT_FOLDER, FileHelper.REMOVED_FOLDER);
+            FileHelper.deleteDirectoryRecursively(dir);
+            dir = Paths.get(FileHelper.ROOT_FOLDER, FileHelper.ADDED_FOLDER);
+            FileHelper.deleteDirectoryRecursively(dir);  
+        } catch (Exception e) {
+            System.err.println("Error deleting file: " + e.getMessage());
+        }
+
         SourceFileAnalyzer analyzer = new SourceFileAnalyzer(directoryPaths);
         analyzer.analyzePath();
     }

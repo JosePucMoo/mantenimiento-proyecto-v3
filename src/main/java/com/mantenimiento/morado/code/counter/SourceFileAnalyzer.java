@@ -8,7 +8,7 @@ import java.util.List;
 import com.mantenimiento.morado.code.model.JavaProject;
 import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.code.syntax.SyntaxAnalyzer;
-import com.mantenimiento.morado.util.Constants;
+import com.mantenimiento.morado.constants.FileStatusConstants;
 import com.mantenimiento.morado.util.ResultsTablePrinter;
 
 /**
@@ -72,7 +72,7 @@ public class SourceFileAnalyzer {
         VersionComparator.compareVersions(projectstoAnalyze);
         
         for (JavaProject currentProject : projectstoAnalyze) {
-            printHeader();
+            ResultsTablePrinter.printHeader();
             analyzeProject(currentProject);
         }
     }
@@ -86,7 +86,7 @@ public class SourceFileAnalyzer {
     private void analyzeProject(JavaProject project) {
         for (SourceFile file : project.getSourceFiles()) {
             SourceFile analyzedFile = analyzeFile(file);
-            printDetails(analyzedFile, project.getProjectName());
+            ResultsTablePrinter.printDetails(analyzedFile, project.getProjectName());
         }
 
         int totalPhysicalLOC = project.getTotalPhysicalLOC();
@@ -127,7 +127,7 @@ public class SourceFileAnalyzer {
         sourceFile.setNumOfMethods(0);
         sourceFile.setAddedLines(0);
         sourceFile.setDeletedLines(0);
-        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_ERROR);
+        sourceFile.setStatus(FileStatusConstants.JAVA_FILE_STATUS_ERROR);
         return sourceFile;
     }
 
@@ -143,7 +143,7 @@ public class SourceFileAnalyzer {
         sourceFile.setNumOfMethods(0);
         sourceFile.setAddedLines(0);
         sourceFile.setDeletedLines(0);
-        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_NO_CLASS);
+        sourceFile.setStatus(FileStatusConstants.JAVA_FILE_STATUS_NO_CLASS);
         return sourceFile;
     }
 
