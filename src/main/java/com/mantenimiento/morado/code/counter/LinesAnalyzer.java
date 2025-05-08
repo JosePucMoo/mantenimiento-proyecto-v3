@@ -53,6 +53,7 @@ public abstract class LinesAnalyzer {
     
         // Filter out empty lines and lines with only spaces
         return Arrays.stream(split)
+                     .map(String::trim)
                      .filter(l -> !l.trim().isEmpty()) // Remove empty lines or lines with only spaces
                      .collect(Collectors.toList());
     }

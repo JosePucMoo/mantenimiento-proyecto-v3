@@ -8,7 +8,8 @@ import java.util.List;
 import com.mantenimiento.morado.code.model.JavaProject;
 import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.code.syntax.SyntaxAnalyzer;
-import com.mantenimiento.morado.util.Constants;
+import com.mantenimiento.morado.constants.FileStatusConstants;
+import com.mantenimiento.morado.util.ResultsTablePrinter;
 
 /**
  * Analyzes Java source files in a given directory by scanning for files,
@@ -71,7 +72,7 @@ public class SourceFileAnalyzer {
         VersionComparator.compareVersions(projectstoAnalyze);
         
         for (JavaProject currentProject : projectstoAnalyze) {
-            printHeader();
+            ResultsTablePrinter.printHeader();
             analyzeProject(currentProject);
         }
     }
@@ -85,12 +86,12 @@ public class SourceFileAnalyzer {
     private void analyzeProject(JavaProject project) {
         for (SourceFile file : project.getSourceFiles()) {
             SourceFile analyzedFile = analyzeFile(file);
-            printDetails(analyzedFile, project.getProjectName());
+            ResultsTablePrinter.printDetails(analyzedFile, project.getProjectName());
         }
 
         int totalPhysicalLOC = project.getTotalPhysicalLOC();
         if (totalPhysicalLOC > 0) {
-            printTotalProyectLOC(totalPhysicalLOC + "");
+            ResultsTablePrinter.printTotalProyectLOC(totalPhysicalLOC + "");
         }
     }
 
@@ -114,74 +115,6 @@ public class SourceFileAnalyzer {
     }
 
     /**
-     * Prints the header for the LOC analysis results table.
-     * <p>
-     * The header includes the columns: "Program", "Logical LOC", "Physical LOC", and "Status".
-     * </p>
-     */
-    private void printHeader() {
-        System.out.printf("%-18s %-30s %-18s %-18s %-18s %-10s%n", "Program", "Class", "Number of methods", "Physical LOC", "Total physical LOC", "Status");
-        System.out.println("---------------------------------------------------------------------------------------------------------------------------");
-    }
-
-    /**
-     * Prints the details of a Java source file.
-     * <p>
-     * The details include the file name, logical LOC, physical LOC, and status.
-     * </p>
-     * @param file the {@link SourceFile} object containing the filename, logical LOC,
-     *             physical LOC, and status to be printed
-     * @see SourceFile
-     */
-    private void printDetails(SourceFile file, String directoryName) {
-        System.out.printf(
-            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
-            directoryName,
-            file.getFilename().replaceFirst("\\.java$", ""),
-            file.getNumOfMethods(),
-            file.getPhysicalLOC(),
-            "",
-            file.getStatus()
-        );
-    }
-
-    /**
-     * Prints the total physical lines of code (LOC) of a program in a formatted table.
-     * 
-     * @param totalPhysicalLOC The total number of physical LOC to print.
-     */
-    private void printTotalProgramLOC(String totalPhysicalLOC) {
-        System.out.printf(
-            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
-            "",
-            "",
-            "",
-            "",
-            totalPhysicalLOC,
-            ""
-        );
-    }
-
-    /**
-     * Prints the total physical lines of code (LOC) of a proyect in a formatted table.
-     * 
-     * @param totalPhysicalLOC The total number of physical LOC to print.
-     */
-    private void printTotalProyectLOC(String totalPhysicalLOC) {
-        System.out.println("---------------------------------------------------------------------------------------------------------------------------");
-        System.out.printf(
-            "%-18s %-30s %-18s %-18s %-18s %-10s%n",
-            "Total Lines",
-            "",
-            "",
-            "",
-            totalPhysicalLOC,
-            ""
-        );
-    }
-
-
-    /**
      * Creates a {@code SourceFile} object representing a Java file that failed syntax analysis.
      * <p>
      * The returned object has zero logical and physical LOC and a status indicating an error.
@@ -194,7 +127,7 @@ public class SourceFileAnalyzer {
         sourceFile.setNumOfMethods(0);
         sourceFile.setAddedLines(0);
         sourceFile.setDeletedLines(0);
-        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_ERROR);
+        sourceFile.setStatus(FileStatusConstants.JAVA_FILE_STATUS_ERROR);
         return sourceFile;
     }
 
@@ -210,7 +143,7 @@ public class SourceFileAnalyzer {
         sourceFile.setNumOfMethods(0);
         sourceFile.setAddedLines(0);
         sourceFile.setDeletedLines(0);
-        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_NO_CLASS);
+        sourceFile.setStatus(FileStatusConstants.JAVA_FILE_STATUS_NO_CLASS);
         return sourceFile;
     }
 

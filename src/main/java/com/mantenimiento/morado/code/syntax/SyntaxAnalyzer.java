@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.mantenimiento.morado.code.model.SourceFile;
-import com.mantenimiento.morado.util.Regex;
+import com.mantenimiento.morado.constants.RegexConstants;
 
 
 /**
@@ -76,7 +76,7 @@ public class SyntaxAnalyzer {
      * Checks whether any line in the provided list matches the multi-instance variable declaration pattern.
      * <p>
      * A multi-instance declaration typically involves declaring multiple variables on a single line,
-     * e.g., "int a, b, c;". This method uses a regular expression (defined in {@link Regex#MULTI_INSTANCE_REGEX})
+     * e.g., "int a, b, c;". This method uses a regular expression (defined in {@link RegexConstants#MULTI_INSTANCE_REGEX})
      * to detect such patterns.
      * </p>
      *
@@ -84,7 +84,7 @@ public class SyntaxAnalyzer {
      * @return {@code true} if at least one line matches the multi-instance pattern; {@code false} otherwise
      */
     private static boolean hasMultiInstance(List<String> fileLines) {
-        Pattern pattern = Pattern.compile(Regex.MULTI_INSTANCE_REGEX);
+        Pattern pattern = Pattern.compile(RegexConstants.MULTI_INSTANCE_REGEX);
         boolean multiInstanceFound = fileLines.stream().anyMatch(line -> pattern.matcher(line).matches());
         return multiInstanceFound;
     }
@@ -123,6 +123,6 @@ public class SyntaxAnalyzer {
      * @return {@code true} if the line matches the class declaration pattern, {@code false} otherwise.
      */
     private static boolean isClassLine(String line) {
-        return line.matches(Regex.CLASS_REGEX);
+        return line.matches(RegexConstants.CLASS_REGEX);
     }
 }

@@ -1,4 +1,4 @@
-package com.mantenimiento.morado.util;
+package com.mantenimiento.morado.constants;
 
 /**
  * The {@code Constants} class defines constant values used throughout the application.
@@ -10,7 +10,7 @@ package com.mantenimiento.morado.util;
  * @author Diana Vazquez
  * @version 2.0.0
  */
-public class Constants {
+public class FileStatusConstants {
 
     /**
      * Represents the status of a Java file that is considered well-written.
