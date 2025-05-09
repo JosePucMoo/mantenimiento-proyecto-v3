@@ -10,25 +10,35 @@ import com.mantenimiento.morado.code.model.SourceFile;
 public class FileFormatter {
     private final int lineLimit = 80;
 
-    public void formatFile(SourceFile oldFile, SourceFile newFile) throws IOException{
+    public void formatFile(SourceFile oldFile, SourceFile newFile) throws IOException {
         List<String> lines = (newFile != null) ? newFile.getAllLinesFromFile() : Collections.emptyList();
 
         for (int index = 0; index < lines.size(); index++) {
-            if(lines.get(index).length()>lineLimit){
-                List<String> sentences = new ArrayList<String>();
+            if (lines.get(index).length() > lineLimit) {
+                List<String> sentences = new ArrayList<>();
                 int initialIndex = 0;
                 int endIndex = lineLimit;
-                
-                while(endIndex<lines.get(index).length()) {
-                    if(lines.get(index).charAt(endIndex)!=' '){
-                        while (lines.get(index).charAt(endIndex)!=' ') {
+
+                String currentLine = lines.get(index);
+
+                while (endIndex < currentLine.length()) {
+                    if (currentLine.charAt(endIndex) != ' ') {
+                        while (endIndex > initialIndex && currentLine.charAt(endIndex) != ' ') {
                             endIndex--;
                         }
                     }
-                    String line = lines.get(index).substring(initialIndex, endIndex-1);
+                    String line = currentLine.substring(initialIndex, endIndex);
                     sentences.add(line);
-                    initialIndex = endIndex;
-                    endIndex += lineLimit;
+                    initialIndex = endIndex + 1;
+                    endIndex = initialIndex + lineLimit;
+                    if (endIndex > currentLine.length()) {
+                        endIndex = currentLine.length();
+                    }
+                }
+
+                // Add any leftover part
+                if (initialIndex < currentLine.length()) {
+                    sentences.add(currentLine.substring(initialIndex));
                 }
 
                 lines.remove(index);
@@ -36,7 +46,16 @@ public class FileFormatter {
                     lines.add(index, sentence);
                     index++;
                 }
+                index--;
             }
+        }
+
+        saveFormattedLines(newFile, lines);
+    }
+
+    private void saveFormattedLines(SourceFile file, List<String> lines) throws IOException {
+        if (file != null) {
+            file.saveAllLinesToFile(lines);
         }
     }
 }
