@@ -12,12 +12,7 @@ import java.util.List;
  * This class is used to encapsulate basic information about a Java source file.
  * It provides a static method to read all lines from a file.
  * </p>
- *
- * @author Ruben Alvarado
- * @author Diana Vazquez
- * @author Fernando Joachin
- * @version 2.1.0
-*/
+ */
 public class SourceFile {
 
     private final String filename;
@@ -31,7 +26,7 @@ public class SourceFile {
     /**
      * Constructs a new {@code SourceFile} with the given filename and path.
      * Other attributes are initialized to zero or empty and can be set later.
-     * 
+     *
      * @param filename the name of the source file
      * @param filePath the path to the source file
      */
@@ -48,15 +43,21 @@ public class SourceFile {
     /**
      * Reads all lines from the specified file.
      *
-     * <p>This method uses {@link java.nio.file.Files#readAllLines(java.nio.file.Path)}.
-     * to read the file content and return it as a list of strings.</p>
-     *
-     * @param filepath the path to the file
      * @return a {@code List<String>} containing all lines from the file
-     * @throws IOException if an I/O error occurs reading from the file or a malformed or unmappable byte sequence is read
+     * @throws IOException if an I/O error occurs reading from the file
      */
     public List<String> getAllLinesFromFile() throws IOException {
         return Files.readAllLines(Paths.get(this.filePath));
+    }
+
+    /**
+     * Saves the given list of lines to the file, overwriting its content.
+     *
+     * @param lines the list of lines to save to the file
+     * @throws IOException if an I/O error occurs writing to the file
+     */
+    public void saveAllLinesToFile(List<String> lines) throws IOException {
+        Files.write(Paths.get(this.filePath), lines);
     }
 
     // Getters
@@ -110,5 +111,4 @@ public class SourceFile {
     public void setStatus(String status) {
         this.status = status;
     }
-
 }
