@@ -10,15 +10,14 @@ import com.mantenimiento.morado.code.model.SourceFile;
 public class FileFormatter {
     private final int lineLimit = 80;
 
-    public void formatFile(SourceFile oldFile, SourceFile newFile) throws IOException {
-        List<String> lines = (newFile != null) ? newFile.getAllLinesFromFile() : Collections.emptyList();
+    public void formatFile(SourceFile file) throws IOException {
+        List<String> lines = (file != null) ? file.getAllLinesFromFile() : Collections.emptyList();
 
         for (int index = 0; index < lines.size(); index++) {
             if (lines.get(index).length() > lineLimit) {
                 List<String> sentences = new ArrayList<>();
                 int initialIndex = 0;
                 int endIndex = lineLimit;
-
                 String currentLine = lines.get(index);
 
                 while (endIndex < currentLine.length()) {
@@ -50,7 +49,7 @@ public class FileFormatter {
             }
         }
 
-        saveFormattedLines(newFile, lines);
+        saveFormattedLines(file, lines);
     }
 
     private void saveFormattedLines(SourceFile file, List<String> lines) throws IOException {
