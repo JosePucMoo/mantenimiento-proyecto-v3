@@ -1,4 +1,4 @@
-package com.mantenimiento.test.test_cases.docs;
+package com.mantenimiento.test.test_cases.docs.DocsCP_003;
 
 /**
  * Clase que representa una calculadora simple.

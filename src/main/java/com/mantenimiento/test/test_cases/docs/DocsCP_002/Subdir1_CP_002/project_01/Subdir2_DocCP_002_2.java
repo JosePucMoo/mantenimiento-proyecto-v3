@@ -1,4 +1,4 @@
-package com.mantenimiento.test.test_cases.docs.DocsCP_002.Subdir1_CP_002;
+package com.mantenimiento.test.test_cases.docs.DocsCP_002.Subdir1_CP_002.project_01;
 
 import java.util.Scanner;
 

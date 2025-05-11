@@ -1,4 +1,4 @@
-package com.mantenimiento.test.test_cases.docs;
+package com.mantenimiento.test.test_cases.docs.DocsCP_001;
 
 import java.util.Scanner;
 
