@@ -23,7 +23,7 @@ public class ResultsTablePrinter {
      * Template for formatting each column in a row.
      */
     private static final String COLUMN_FORMAT_TEMPLATE = 
-    "%-18s %-30s %-18s %-18s %-18s %-10s%n";
+    "%-18s %-30s %-18s %-18s %-18s %-18s %-18s %-10s%n";
 
     /**
      * Header for the program column.
@@ -49,13 +49,23 @@ public class ResultsTablePrinter {
      * Header for the total physical LOC column.
      */
     private static final String HEADER_TOTAL_LOC = "Total physical LOC";
+    
+    /**
+     * Header for the added lines column.
+     */
+    private static final String HEADER_ADDED_LINES = "Added lines";
+
+    /**
+     * Header for the deleted lines column.
+     */
+    private static final String HEADER_DELETED_LINES = "Deleted lines";
 
     /**
      * Header for the Status column.
      */
     private static final String HEADER_STATUS = "Status";
 
-    private static final String SEPARATOR = "---------------------------------------------------------------------------------------------------------------------------";
+    private static final String SEPARATOR = "-------------------------------------------------------------------------------------------------------------------------------------------";
 
     /**
      * Prints the header for the LOC analysis results table.
@@ -64,7 +74,7 @@ public class ResultsTablePrinter {
      * </p>
      */
     public static void printHeader() {
-        System.out.printf(COLUMN_FORMAT_TEMPLATE, HEADER_PROGRAM, HEADER_CLASS, HEADER_METHODS, HEADER_PHYSICAL_LOC, HEADER_TOTAL_LOC, HEADER_STATUS);
+        System.out.printf(COLUMN_FORMAT_TEMPLATE, HEADER_PROGRAM, HEADER_CLASS, HEADER_METHODS, HEADER_PHYSICAL_LOC, HEADER_ADDED_LINES, HEADER_DELETED_LINES, HEADER_TOTAL_LOC, HEADER_STATUS);
         System.out.println(SEPARATOR);
     }
 
@@ -75,6 +85,8 @@ public class ResultsTablePrinter {
             file.getFilename().replaceFirst("\\.java$", ""),
             file.getNumOfMethods(),
             file.getPhysicalLOC(),
+            file.getAddedLines(),
+            file.getDeletedLines(),
             "",
             file.getStatus()
         );
@@ -90,6 +102,8 @@ public class ResultsTablePrinter {
         System.out.printf(
             COLUMN_FORMAT_TEMPLATE,
             "Total Lines",
+            "",
+            "",
             "",
             "",
             "",
