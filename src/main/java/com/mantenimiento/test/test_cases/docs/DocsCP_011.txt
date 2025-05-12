@@ -1,3 +1,0 @@
-Este es un texto de prueba que definitivamente excede los ochenta caracteres de largo y debería ser dividido en varias líneas más cortas por el formateador.
-Esta línea no necesita cambios.
-Otra línea que sí excede los ochenta caracteres con palabras que deben ser cortadas en espacios, no a la mitad.
