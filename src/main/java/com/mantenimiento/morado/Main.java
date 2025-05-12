@@ -46,7 +46,6 @@ public class Main {
                     String filename = file.getName();
                     String filePath = file.getAbsolutePath();
 
-                    // Intenta encontrar archivo correspondiente en oldVersion
                     String oldVersionPath = directoryPaths.get(0) + "/" + filename;
                     File oldFileCandidate = new File(oldVersionPath);
                     SourceFile oldFile = oldFileCandidate.exists() ? new SourceFile(filename, oldVersionPath) : null;
