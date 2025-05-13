@@ -1,4 +1,6 @@
-public class Calculator {
+package com.mantenimiento.test.test_cases.docs.DocsCP_011.newVersion;
+
+public class DocCP_011_1 {
     public int add(int a, int b) {
         return a + b; // performs addition
     }
