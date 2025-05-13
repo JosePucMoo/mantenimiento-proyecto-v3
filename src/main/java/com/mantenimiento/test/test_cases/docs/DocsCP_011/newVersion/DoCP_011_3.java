@@ -1,4 +1,6 @@
-public class Printer {
+package com.mantenimiento.test.test_cases.docs.DocsCP_011.newVersion;
+
+public class DoCP_011_3 {
     // Prints a simple message
     public void print(String message) {
         System.out.println(message);

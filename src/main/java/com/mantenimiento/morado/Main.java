@@ -15,8 +15,8 @@ public class Main {
         } */
         
         List<String> directoryPaths = List.of(
-            "C:/Users/Lenovo/Documents/OctavoSemestre/Mantenimiento/proyecto/mantenimiento-proyecto-v3/oldVersion",
-            "C:/Users/Lenovo/Documents/OctavoSemestre/Mantenimiento/proyecto/mantenimiento-proyecto-v3/newVersion" 
+            "oldVersion",
+            "newVersion" 
         );
 
         try {

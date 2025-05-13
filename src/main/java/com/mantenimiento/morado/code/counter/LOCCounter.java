@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import com.mantenimiento.morado.code.model.SourceFile;
-import com.mantenimiento.morado.util.Constants;
+import com.mantenimiento.morado.constants.FileStatusConstants;
+import com.mantenimiento.morado.constants.RegexConstants;
 
 /**
  * The {@code LOCCounter} class provides functionality for counting the
@@ -32,7 +33,7 @@ public class LOCCounter {
      * creates a {@code SourceFile} object with the file's name, LOC counts, and status.
      *
      * @param sourceFile The Java source file to be analyzed.
-     * number of methods and the Java file status constant from {@link Constants}.
+     * number of methods and the Java file status constant from {@link FileStatusConstants}.
      */
     public static void countLOC(SourceFile sourceFile) {
         try {
@@ -45,7 +46,7 @@ public class LOCCounter {
 
         sourceFile.setPhysicalLOC(physicalLOC);
         sourceFile.setNumOfMethods(numOfMethods);
-        sourceFile.setStatus(Constants.JAVA_FILE_STATUS_OK);
+        sourceFile.setStatus(FileStatusConstants.JAVA_FILE_STATUS_OK);
     }
 
     /**
@@ -160,7 +161,7 @@ public class LOCCounter {
     * @return {@code true} if the line is a method, otherwise {@code false}.
     */
     private static boolean isMethodLine(String line) {
-        return line.matches("^(public|private|protected)\\s+[a-zA-Z\\s]*\\s*[\\w<>\\[\\],]*\\s*\\w+\\s*\\(.*\\)?\\s*.*\\{?\\s*(//.*)?$");
+        return line.matches(RegexConstants.METHOD_REGEX);
     }
 
     /**
@@ -170,7 +171,7 @@ public class LOCCounter {
     * @return {@code true} if the line is an abstract method, otherwise {@code false}.
     */
     private static boolean isAbstractMethodLine(String line) {
-        return line.matches("^(public|private|protected)\\s(abstract)\\s+[\\w<>\\[\\],]+\\s+\\w+\\s*\\(.*\\)?\\s*(//.*)?");
+        return line.matches(RegexConstants.ABSTRACT_METHOD_REGEX);
     }
 
     /**
