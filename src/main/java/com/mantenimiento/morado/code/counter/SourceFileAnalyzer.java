@@ -69,10 +69,25 @@ public class SourceFileAnalyzer {
         projectstoAnalyze.add(oldProject);
         projectstoAnalyze.add(newProject);
         VersionComparator.compareVersions(projectstoAnalyze);
-        
+
+        FileFormatter formatter = new FileFormatter();
+
         for (JavaProject currentProject : projectstoAnalyze) {
             printHeader();
             analyzeProject(currentProject);
+
+            List<SourceFile> files = currentProject.getSourceFiles();
+            for (int i = 0; i < files.size(); i++) {
+                SourceFile oldFile = (i < projectstoAnalyze.get(0).getSourceFiles().size())
+                    ? projectstoAnalyze.get(0).getSourceFiles().get(i)
+                    : null;
+                SourceFile newFile = files.get(i);
+                try {
+                    formatter.formatFile(oldFile, newFile);
+                } catch (IOException e) {
+                    System.err.println("Error formatting file " + newFile.getFilename() + ": " + e.getMessage());
+                }
+            }
         }
     }
 
