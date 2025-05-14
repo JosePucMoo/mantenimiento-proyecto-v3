@@ -1,6 +1,6 @@
 package com.mantenimiento.test.test_cases.docs.DocsCP_014.newVersion;
 
-public class Printer {
+public class DocCP_014_2 {
     // Prints a simple message
     public void print(String message) {
         System.out.println(message);
