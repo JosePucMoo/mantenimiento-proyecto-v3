@@ -72,6 +72,10 @@ public class SourceFileAnalyzer {
 
         FileFormatter formatter = new FileFormatter();
 
+        /**
+     * los cambios que hice yo
+     */
+        
         for (JavaProject currentProject : projectstoAnalyze) {
             printHeader();
             analyzeProject(currentProject);
