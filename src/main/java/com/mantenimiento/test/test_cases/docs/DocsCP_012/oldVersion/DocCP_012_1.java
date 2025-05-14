@@ -1,6 +1,6 @@
-package com.mantenimiento.test.test_cases.docs.DocsCP_013.oldVersion;
+package com.mantenimiento.test.test_cases.docs.DocsCP_012.oldVersion;
 
-public class Calculator {
+public class DocCP_012_1 {
     public int add(int a, int b) {
         return a + b;
     }
@@ -16,4 +16,5 @@ public class Calculator {
     public void unusedMethod() {
         System.out.println("This method is not used.");
     }
+    
 }

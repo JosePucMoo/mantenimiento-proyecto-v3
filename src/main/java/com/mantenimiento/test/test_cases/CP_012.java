@@ -7,11 +7,11 @@ import java.util.List;
 import com.mantenimiento.morado.code.counter.SourceFileAnalyzer;
 import com.mantenimiento.morado.util.FileHelper;
 
-public class CP_011 {
+public class CP_012 {
     public static void main(String[] args) {
         List<String> directoryPaths = List.of(
-            "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocsCP_011\\oldVersion",
-            "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocsCP_011\\newVersion" 
+            "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocsCP_012\\oldVersion",
+            "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocsCP_012\\newVersion" 
         );
 
         try {
@@ -22,8 +22,8 @@ public class CP_011 {
         } catch (Exception e) {
             System.err.println("Error deleting file: " + e.getMessage());
         }
-        
+
         SourceFileAnalyzer analyzer = new SourceFileAnalyzer(directoryPaths);
         analyzer.analyzePath();
-    }
+    }    
 }

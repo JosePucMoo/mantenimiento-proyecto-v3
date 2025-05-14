@@ -27,6 +27,9 @@ hs_err_pid*
 Thumbs.db
 *.class
 
+# Archivos generados por el sistema
+/comparison_results
+
 # Configuración de entorno
 .env
 *.properties
