@@ -1,4 +1,4 @@
-package com.mantenimiento.morado.code.counter;
+package com.mantenimiento.morado.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import com.mantenimiento.morado.code.model.SourceFile;
 public class FileFormatter {
     private final int lineLimit = 80;
 
-    public void formatFile(SourceFile oldFile, SourceFile newFile) throws IOException {
+    public void formatFile(SourceFile newFile) throws IOException {
         List<String> lines = (newFile != null) ? newFile.getAllLinesFromFile() : Collections.emptyList();
 
         for (int index = 0; index < lines.size(); index++) {
@@ -50,12 +50,6 @@ public class FileFormatter {
             }
         }
 
-        saveFormattedLines(newFile, lines);
-    }
-
-    private void saveFormattedLines(SourceFile file, List<String> lines) throws IOException {
-        if (file != null) {
-            file.saveAllLinesToFile(lines);
-        }
+        FileHelper.writeFileInFormattedFolder(newFile.getFilename(), lines);
     }
 }

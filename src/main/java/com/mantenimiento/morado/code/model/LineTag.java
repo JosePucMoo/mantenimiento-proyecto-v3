@@ -10,7 +10,7 @@ public enum LineTag {
     /**
      * Tag for a newly added line of code.
      */
-    ADDED(" // línea agregada"),
+    ADDED(" // línea nueva"),
 
     /**
      * Tag for a deleted line of code.

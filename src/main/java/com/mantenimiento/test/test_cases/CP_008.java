@@ -1,10 +1,14 @@
 package com.mantenimiento.test.test_cases;
 
+import java.util.List;
+
 import com.mantenimiento.morado.code.counter.SourceFileAnalyzer;
 
 public class CP_008 {
     public static void main(String[] args) {
-        String testPath = "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocCP_008.java";
+        List<String> testPath = List.of(
+                "src/main/java/com/mantenimiento/test/test_cases/docs/DocsCP_008",
+                "src/main/java/com/mantenimiento/test/test_cases/docs/DocsCP_008");
         SourceFileAnalyzer analyzer = new SourceFileAnalyzer(testPath);
         analyzer.analyzePath();
     }

@@ -50,16 +50,6 @@ public class SourceFile {
         return Files.readAllLines(Paths.get(this.filePath));
     }
 
-    /**
-     * Saves the given list of lines to the file, overwriting its content.
-     *
-     * @param lines the list of lines to save to the file
-     * @throws IOException if an I/O error occurs writing to the file
-     */
-    public void saveAllLinesToFile(List<String> lines) throws IOException {
-        Files.write(Paths.get(this.filePath), lines);
-    }
-
     // Getters
 
     public String getFilename() {

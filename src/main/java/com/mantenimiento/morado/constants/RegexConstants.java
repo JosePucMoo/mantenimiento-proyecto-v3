@@ -1,4 +1,4 @@
-package com.mantenimiento.morado.util;
+package com.mantenimiento.morado.constants;
 
 /**
  * The {@code Regex} class contains regular expressions used for syntax validation in Java source files.
@@ -10,7 +10,7 @@ package com.mantenimiento.morado.util;
  * @author Diana Vazquez
  * @version 2.0
  */
-public class Regex {
+public class RegexConstants {
 
     /**
      * Regular expression for detecting multi-instance variable declarations on a single line.
@@ -40,4 +40,29 @@ public class Regex {
      * </pre>
      */
     public static final String CLASS_REGEX = "(public|private|protected)(\\s\\w+)*\\s+(class).*\\s*(//.*)?$";
+
+    /**
+     * Regular expression for detecting method declarations in Java files.
+     * <p>
+     * Matches methods with optional access modifiers and return types, including generics and arrays.
+     * Also considers optional inline comments and optional opening curly braces.
+     * </p>
+     * <pre>
+     * public void doSomething() {
+     * private static List<String> getNames() throws IOException {
+     * </pre>
+     */
+    public static final String METHOD_REGEX = "^(public|private|protected)\\s+[a-zA-Z\\s]*\\s*[\\w<>\\[\\],]*\\s*\\w+\\s*\\(.*\\)?\\s*.*\\{?\\s*(//.*)?$";
+
+    /**
+     * Regular expression for detecting abstract method declarations in Java files.
+     * <p>
+     * Matches lines that define abstract methods with optional access modifiers and return types.
+     * </p>
+     * <pre>
+     * public abstract void process();
+     * protected abstract List<String> computeValues();
+     * </pre>
+     */
+    public static final String ABSTRACT_METHOD_REGEX = "^(public|private|protected)\\s+abstract\\s+[\\w<>\\[\\],]+\\s+\\w+\\s*\\(.*\\)?\\s*(//.*)?$";
 }

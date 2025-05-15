@@ -1,30 +1,29 @@
 package com.mantenimiento.test.test_cases;
 
-import com.mantenimiento.morado.code.counter.FileFormatter;
-import com.mantenimiento.morado.code.model.SourceFile;
-
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+
+import com.mantenimiento.morado.code.counter.SourceFileAnalyzer;
+import com.mantenimiento.morado.util.FileHelper;
 
 public class CP_011 {
     public static void main(String[] args) {
-        String path = "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocsCP_004.txt";
+        List<String> directoryPaths = List.of(
+            "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocsCP_011\\oldVersion",
+            "src\\main\\java\\com\\mantenimiento\\test\\test_cases\\docs\\DocsCP_011\\newVersion" 
+        );
 
         try {
-            SourceFile file = new SourceFile(path);
-            FileFormatter formatter = new FileFormatter();
-
-            // Formatea y guarda las líneas modificadas
-            formatter.formatFile(null, file);
-
-            // Imprime el resultado para validación manual
-            List<String> resultLines = file.getAllLinesFromFile();
-            System.out.println("Resultado tras aplicar formatFile:");
-            for (String line : resultLines) {
-                System.out.println(line);
-            }
-        } catch (IOException e) {
-            System.err.println("CP_011: Error al procesar el archivo: " + e.getMessage());
+            Path dir = Paths.get(FileHelper.ROOT_COMPARISON_FOLDER, FileHelper.REMOVED_FOLDER);
+            FileHelper.deleteDirectoryRecursively(dir);
+            dir = Paths.get(FileHelper.ROOT_COMPARISON_FOLDER, FileHelper.ADDED_FOLDER);
+            FileHelper.deleteDirectoryRecursively(dir);  
+        } catch (Exception e) {
+            System.err.println("Error deleting file: " + e.getMessage());
         }
+        
+        SourceFileAnalyzer analyzer = new SourceFileAnalyzer(directoryPaths);
+        analyzer.analyzePath();
     }
 }
