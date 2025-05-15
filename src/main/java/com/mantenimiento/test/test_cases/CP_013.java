@@ -15,9 +15,9 @@ public class CP_013 {
         );
 
         try {
-            Path dir = Paths.get(FileHelper.ROOT_FOLDER, FileHelper.REMOVED_FOLDER);
+            Path dir = Paths.get(FileHelper.ROOT_COMPARISON_FOLDER, FileHelper.REMOVED_FOLDER);
             FileHelper.deleteDirectoryRecursively(dir);
-            dir = Paths.get(FileHelper.ROOT_FOLDER, FileHelper.ADDED_FOLDER);
+            dir = Paths.get(FileHelper.ROOT_COMPARISON_FOLDER, FileHelper.ADDED_FOLDER);
             FileHelper.deleteDirectoryRecursively(dir);  
         } catch (Exception e) {
             System.err.println("Error deleting file: " + e.getMessage());
