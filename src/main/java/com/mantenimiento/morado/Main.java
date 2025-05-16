@@ -15,8 +15,8 @@ public class Main {
         } */
         
         List<String> directoryPaths = List.of(
-            "oldVersion",
-            "newVersion" 
+            "morado",
+            "src\\main\\java\\com\\mantenimiento\\morado"
         );
 
         try {

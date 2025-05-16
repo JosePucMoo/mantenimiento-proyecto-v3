@@ -29,6 +29,7 @@ Thumbs.db
 
 # Archivos generados por el sistema
 /comparison_results
+/formatted_results
 
 # Configuración de entorno
 .env
