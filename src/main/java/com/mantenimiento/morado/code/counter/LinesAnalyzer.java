@@ -39,24 +39,61 @@ public abstract class LinesAnalyzer {
      * @return cleaned list of lines
      */
     private List<String> cleanLines(List<String> lines) {
-        // Join the lines into a single string
-        String joined = String.join("\n", lines);
-    
-        // Remove block comments (/* ... */)
-        joined = joined.replaceAll("(?s)/\\*.*?\\*/", "");
-    
-        // Remove line comments (// ...) that might be after code
-        joined = joined.replaceAll("//.*", "");
-    
-        // Split the text into lines
-        String[] split = joined.split("\\R");
-    
-        // Filter out empty lines and lines with only spaces
-        return Arrays.stream(split)
-                     .map(String::trim)
-                     .filter(l -> !l.trim().isEmpty()) // Remove empty lines or lines with only spaces
-                     .collect(Collectors.toList());
+        List<String> cleaned = new ArrayList<>();
+        boolean inBlockComment = false;
+
+        for (String line : lines) {
+            StringBuilder sb = new StringBuilder();
+            boolean inString = false;
+            int i = 0;
+
+            while (i < line.length()) {
+                if (inBlockComment) {
+                    if (i + 1 < line.length() && line.charAt(i) == '*' && line.charAt(i + 1) == '/') {
+                        inBlockComment = false;
+                        i += 2;
+                    } else {
+                        i++;
+                    }
+                    continue;
+                }
+
+                char c = line.charAt(i);
+
+                if (!inString && i + 1 < line.length()) {
+                    char next = line.charAt(i + 1);
+
+                    // Start of block comment
+                    if (c == '/' && next == '*') {
+                        inBlockComment = true;
+                        i += 2;
+                        continue;
+                    }
+
+                    // Start of line comment
+                    if (c == '/' && next == '/') {
+                        break; // ignore rest of line
+                    }
+                }
+
+                // Toggle string state (handle escaped quotes too)
+                if (c == '"' && (i == 0 || line.charAt(i - 1) != '\\')) {
+                    inString = !inString;
+                }
+
+                sb.append(c);
+                i++;
+            }
+
+            String result = sb.toString().trim();
+            if (!result.isEmpty()) {
+                cleaned.add(result);
+            }
+        }
+
+        return cleaned;
     }
+
     
 
     /**

@@ -1,5 +1,6 @@
 package com.mantenimiento.morado.code.counter;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import com.mantenimiento.morado.code.model.JavaProject;
 import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.code.syntax.SyntaxAnalyzer;
 import com.mantenimiento.morado.constants.FileStatusConstants;
+import com.mantenimiento.morado.util.FileFormatter;
 import com.mantenimiento.morado.util.ResultsTablePrinter;
 
 /**
@@ -70,10 +72,19 @@ public class SourceFileAnalyzer {
         projectstoAnalyze.add(oldProject);
         projectstoAnalyze.add(newProject);
         VersionComparator.compareVersions(projectstoAnalyze);
-        
+
         for (JavaProject currentProject : projectstoAnalyze) {
             ResultsTablePrinter.printHeader();
             analyzeProject(currentProject);
+        }
+
+        FileFormatter formatter = new FileFormatter();
+        for (SourceFile newFile : newProject.getSourceFiles()) {
+            try {
+                formatter.formatFile(newFile);
+            } catch (IOException e) {
+                 System.err.println("Error formatting file " + newFile.getFilename() + ": " + e.getMessage());
+            }
         }
     }
 

@@ -21,7 +21,10 @@ import java.util.List;
 public class FileHelper {
 
     /** Root folder where comparison result files are stored. */
-    public static final String ROOT_FOLDER = "comparison_results";
+    public static final String ROOT_COMPARISON_FOLDER = "comparison_results";
+
+    /** Root folder where comparison result files are stored. */
+    public static final String ROOT_FORMATTED_FOLDER = "formatted_results";
 
     /** Subfolder for lines that were removed (tag: "deleted"). */
     public static final String REMOVED_FOLDER = "deleted_lines";
@@ -61,13 +64,12 @@ public class FileHelper {
      */
     private static void writeToSubfolder(List<String> lines, String subfolder, String outputFileName) {
         try {
-            Path dir = Paths.get(ROOT_FOLDER, subfolder);
+            Path dir = Paths.get(ROOT_COMPARISON_FOLDER, subfolder);
 
             Files.createDirectories(dir);
 
             Path filePath = dir.resolve(outputFileName);
             Files.write(filePath, lines);
-            System.out.println("File saved at: " + filePath.toAbsolutePath());
         } catch (IOException e) {
             System.err.println("Error writing file: " + e.getMessage());
         }
@@ -87,4 +89,30 @@ public class FileHelper {
                 .forEach(File::delete);
         }
     }
+
+
+    /**
+     * Creates the ROOT_FORMATTED_FOLDER directory if it doesn't exist,
+     * and writes a Java file inside it with the provided name and content.
+     *
+     * @param fileName the name of the Java file to create (e.g., "MyClass.java")
+     * @param lines    the lines of content to write into the file
+     */
+    public static void writeFileInFormattedFolder(String fileName, List<String> lines) {
+        try {
+            // Create the root folder if it doesn't exist
+            Path dir = Paths.get(ROOT_FORMATTED_FOLDER);
+            Files.createDirectories(dir);
+
+            // Define the full path to the target file
+            Path filePath = dir.resolve(fileName);
+            
+            // Write the content to the file
+            Files.write(filePath, lines);
+
+        } catch (IOException e) {
+           System.err.println("Error writing file: " + e.getMessage());
+        }
+    }
+
 }
