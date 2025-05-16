@@ -17,6 +17,9 @@ import java.util.List;
  * </p>
  * 
  * <p>Generated files are stored under the {@code comparison_results} root folder.</p>
+ * 
+ * @author Fernando Joachin
+ * @version 1.0.0
  */
 public class FileHelper {
 

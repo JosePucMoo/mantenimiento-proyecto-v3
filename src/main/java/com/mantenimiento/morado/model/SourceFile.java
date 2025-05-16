@@ -1,4 +1,4 @@
-package com.mantenimiento.morado.code.model;
+package com.mantenimiento.morado.model;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,12 +6,20 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Represents a source file with its name, number of logical lines of code, physical lines of code,
- * methods, added/deleted lines, and a status indicating its state.
- * <p>
- * This class is used to encapsulate basic information about a Java source file.
- * It provides a static method to read all lines from a file.
- * </p>
+ * Represents a Java source file and tracks basic metrics and state:
+ * <ul>
+ *   <li>Filename and file path</li>
+ *   <li>Physical lines of code (LOC)</li>
+ *   <li>Number of methods</li>
+ *   <li>Count of added and deleted lines (after comparison)</li>
+ *   <li>Arbitrary status flag (e.g., “processed”, “error”)</li>
+ * </ul>
+ *
+ *
+ * @author Ruben Alvarado
+ * @author Diana Vazquez
+ * @author Aaron Graniel
+ * @version 2.1.0
  */
 public class SourceFile {
 
@@ -24,11 +32,11 @@ public class SourceFile {
     private String status;
 
     /**
-     * Constructs a new {@code SourceFile} with the given filename and path.
-     * Other attributes are initialized to zero or empty and can be set later.
+     * Creates a new SourceFile wrapper. All numeric metrics start at zero,
+     * status is empty.
      *
-     * @param filename the name of the source file
-     * @param filePath the path to the source file
+     * @param filename the file’s name (e.g. “MyClass.java”)
+     * @param filePath the full path to the file on disk
      */
     public SourceFile(String filename, String filePath) {
         this.filename     = filename;
@@ -41,16 +49,16 @@ public class SourceFile {
     }
 
     /**
-     * Reads all lines from the specified file.
+     * Reads the entire file into a list of lines.
      *
-     * @return a {@code List<String>} containing all lines from the file
-     * @throws IOException if an I/O error occurs reading from the file
+     * @return list of all lines in the file
+     * @throws IOException if there’s an I/O problem reading the file
      */
     public List<String> getAllLinesFromFile() throws IOException {
         return Files.readAllLines(Paths.get(this.filePath));
     }
 
-    // Getters
+    // — Getters and setters below — //
 
     public String getFilename() {
         return filename;
@@ -64,38 +72,36 @@ public class SourceFile {
         return physicalLOC;
     }
 
-    public int getNumOfMethods() {
-        return numOfMethods;
-    }
-
-    public int getAddedLines() {
-        return addedLines;
-    }
-
-    public int getDeletedLines() {
-        return deletedLines;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    // Setters
-
     public void setPhysicalLOC(int physicalLOC) {
         this.physicalLOC = physicalLOC;
+    }
+
+    public int getNumOfMethods() {
+        return numOfMethods;
     }
 
     public void setNumOfMethods(int numOfMethods) {
         this.numOfMethods = numOfMethods;
     }
 
+    public int getAddedLines() {
+        return addedLines;
+    }
+
     public void setAddedLines(int addedLines) {
         this.addedLines = addedLines;
     }
 
+    public int getDeletedLines() {
+        return deletedLines;
+    }
+
     public void setDeletedLines(int deletedLines) {
         this.deletedLines = deletedLines;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {

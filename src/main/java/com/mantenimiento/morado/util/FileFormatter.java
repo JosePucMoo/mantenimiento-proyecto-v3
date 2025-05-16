@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.mantenimiento.morado.code.model.SourceFile;
+import com.mantenimiento.morado.model.SourceFile;
 
 public class FileFormatter {
     private final int lineLimit = 80;

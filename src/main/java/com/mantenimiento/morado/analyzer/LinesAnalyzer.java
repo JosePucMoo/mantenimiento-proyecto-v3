@@ -1,17 +1,27 @@
-package com.mantenimiento.morado.code.counter;
+package com.mantenimiento.morado.analyzer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import com.mantenimiento.morado.model.LineTag;
 import com.mantenimiento.morado.util.FileHelper;
 import com.mantenimiento.morado.util.LineSimilarityUtil;
-import com.mantenimiento.morado.code.model.LineTag;
 
 /**
- * Abstract class for analyzing differences between two versions of code lines.
- * It provides shared logic for cleaning lines, detecting relevant positions, 
- * and marking/writing modified lines.
+ * Base class that compares two versions of code lines, identifies which lines
+ * should be marked (added, deleted, or modified), and writes out the results
+ * with tags.
+ *
+ * <p>Responsibilities:
+ * <ul>
+ *   <li>Clean raw lines (remove comments, trim whitespace, drop empty lines).</li>
+ *   <li>Detect line indices to mark via subclass implementation of {@link #detectPositionsToMark()}.</li>
+ *   <li>Append appropriate tags (ADDED, DELETED, or MODIFIED) and write to file.</li>
+ * </ul>
+ * 
+ * @author Aaron Graniel
+ * @author Fernando Joachin
+ * @version 1.0.0
  */
 public abstract class LinesAnalyzer {
     

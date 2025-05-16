@@ -1,4 +1,4 @@
-package com.mantenimiento.morado.code.model;
+package com.mantenimiento.morado.model;
 
 import java.util.ArrayList;
 import java.util.List;

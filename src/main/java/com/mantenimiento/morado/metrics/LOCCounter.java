@@ -1,11 +1,11 @@
-package com.mantenimiento.morado.code.counter;
+package com.mantenimiento.morado.metrics;
 
 import java.io.IOException;
 import java.util.List;
 
-import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.constants.FileStatusConstants;
 import com.mantenimiento.morado.constants.RegexConstants;
+import com.mantenimiento.morado.model.SourceFile;
 
 /**
  * The {@code LOCCounter} class provides functionality for counting the

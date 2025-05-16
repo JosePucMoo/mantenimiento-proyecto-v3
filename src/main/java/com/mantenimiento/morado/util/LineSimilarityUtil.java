@@ -5,6 +5,9 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 /**
  * Utility class for determining the similarity between two lines
  * and classifying them as a modification or a new line.
+ * 
+ * @author Aaron Graniel
+ * @version 1.0.0
  */
 public final class LineSimilarityUtil {
     /**
@@ -18,7 +21,7 @@ public final class LineSimilarityUtil {
      *
      * @param oldLine the original line
      * @param newLine the updated line
-     * @return true if similarity is above or equal to MIN_SIMILARITY, false otherwise
+     * @return true if similarity is above or equal to 0.70, false otherwise
      * @throws NullPointerException if oldLine or newLine is null
      */
     public static boolean isModified(String oldLine, String newLine) {

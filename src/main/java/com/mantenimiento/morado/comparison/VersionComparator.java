@@ -1,4 +1,4 @@
-package com.mantenimiento.morado.code.counter;
+package com.mantenimiento.morado.comparison;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -6,12 +6,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mantenimiento.morado.code.model.JavaProject;
-import com.mantenimiento.morado.code.model.SourceFile;
+import com.mantenimiento.morado.analyzer.AddedLinesAnalyzer;
+import com.mantenimiento.morado.analyzer.DeletedLinesAnalyzer;
+import com.mantenimiento.morado.model.JavaProject;
+import com.mantenimiento.morado.model.SourceFile;
 
 /**
  * Compares two versions of a Java project to identify added and deleted lines in source files.
  * It requires a list containing exactly two {@link JavaProject} objects: the old and the new version.
+ * 
+ * <p>After running, each {@link SourceFile} in the projects will have its
+ * added/deleted line counts updated and a file written with tags.</p>
+ * 
+ * @author Aaron Graniel
+ * @author Fernando Joachin
+ * @version 1.0.0
  */
 public class VersionComparator {
 

@@ -1,11 +1,11 @@
-package com.mantenimiento.morado.code.syntax;
+package com.mantenimiento.morado.analyzer;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.constants.RegexConstants;
+import com.mantenimiento.morado.model.SourceFile;
 
 
 /**
