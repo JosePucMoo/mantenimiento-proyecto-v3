@@ -9,174 +9,239 @@ import com.mantenimiento.morado.code.model.SourceFile;
 import com.mantenimiento.morado.constants.RegexConstants;
 
 public class FileFormatter {
-    private final int LINE_LIMIT = 80;
-    private final char SPACE = ' ';
-    private final char PERIOD = '.';
-    private final char COMMA = ',';
+    private static final int LINE_LIMIT = 80;
+    private static final char SPACE = ' ';
+    private static final char PERIOD = '.';
+    private static final char COMMA = ',';
+    private static final char QUOTE = '"';
+    private static final char SINGLE_QUOTE = '\'';
+    private static final String LINE_COMMENT = "//";
+    private static final String BLOCK_COMMENT_START = "/*";
+    private static final String BLOCK_COMMENT_END = "*/";
+    private static final String INDENTATION = "    ";
 
-    
     public void formatFile(SourceFile newFile) throws IOException {
-        List<String> lines = (newFile != null) ? newFile.getAllLinesFromFile() : Collections.emptyList();
+        if (newFile == null) {
+            throw new IllegalArgumentException("SourceFile cannot be null");
+        }
 
-        for (int index = 0; index < lines.size(); index++) {
-            String currentLine = lines.get(index);
+        List<String> lines = newFile.getAllLinesFromFile();
+        if (lines == null) {
+            lines = Collections.emptyList();
+        }
+
+        List<String> formattedLines = new ArrayList<>();
+        for (String currentLine : lines) {
             if (currentLine.length() > LINE_LIMIT) {
-                List<String> sentences = new ArrayList<>();
-                
-                //métodos
-                if(currentLine.matches(RegexConstants.METHOD_REGEX) || currentLine.matches(RegexConstants.ABSTRACT_METHOD_REGEX)){
-                    sentences = separateLineByParenthesis(currentLine);
-                    if(sentences.get(1).length() > LINE_LIMIT){
-                        List<String> parameterList = separateLineByCharacter(currentLine, COMMA);
-                        sentences.remove(1);
-                        sentences.addAll(1, parameterList);
-                    }
-                }
-                //estructuras de control
-                else if(currentLine.matches(RegexConstants.FLOW_CONTROL_REGEX)){
-                    sentences = separateLineByParenthesis(currentLine);
-                    if(sentences.get(1).length() > LINE_LIMIT){
-                        List<String> parameterList = separateLineByCharacter(currentLine, SPACE);
-                        sentences.remove(1);
-                        sentences.addAll(1, parameterList);
-                    }
-                }
-                //si tiene comentario de línea -- separarlo
-                else if(currentLine.matches(RegexConstants.SINGLE_LINE_COMMENT_IN_CODE_LINE)){
-                    sentences = separateLineByLineComment(currentLine);
-                    //volver a revisar la anterior
-                    //volver a revisar comentario
-                }
-                //comentarios largos a comentarios de bloque
-                else if(currentLine.matches(RegexConstants.ONLY_SINGLE_LINE_COMMENT)){
-                    sentences = separateLineByCharacter(currentLine, SPACE);
-
-                    sentences.set(0, "/*"+sentences.get(0).substring(2));
-                    for (int i = 1; i < sentences.size()-1; i++) {
-                        sentences.set(i, "*" + sentences.get(i));
-                    }
-                    sentences.set(sentences.size()-1, sentences.get(sentences.size()-1)+"*/");
-                }
-                //si import/package -- separar por .
-                else if(currentLine.matches(RegexConstants.IMPORT_OR_PACKAGE_REGEX)){
-                    sentences = separateLineByCharacter(currentLine, PERIOD);
-                }
-                //si hay "" -- separarlo con "+"
-                else if(currentLine.matches(RegexConstants.QUOTED_STRING_REGEX)){
-                    sentences = separateLineWithQuote(currentLine);
-                }
-                //a,a,a -- separar por coma
-                //sino separar por espacios
-                else{
-                    sentences = separateLineByCharacter(currentLine, SPACE);
-                }
-                lines.remove(index);
-                lines.addAll(index, sentences);
+                formattedLines.addAll(processLongLine(currentLine));
+            } else {
+                formattedLines.add(currentLine);
             }
         }
 
-        FileHelper.writeFileInFormattedFolder(newFile.getFilename(), lines);
+        FileHelper.writeFileInFormattedFolder(newFile.getFilename(), formattedLines);
     }
 
-    private List<String> separateLineByParenthesis (String currentLine) {
-        List<String> sentences = new ArrayList<>();
-        int beginParenthesis = currentLine.indexOf('(')+1;
-        int endParenthesis = 0;
-        for (int i = currentLine.length(); i > 0 ; i--) {
-            if(currentLine.charAt(i) == ')'){
-                endParenthesis = i;
+    private List<String> processLongLine(String currentLine) {
+        if (currentLine.contains(String.valueOf(QUOTE)) ||
+            currentLine.contains(String.valueOf(SINGLE_QUOTE))) {
+            return handleQuotedString(currentLine);
+        } else if (currentLine.matches(RegexConstants.METHOD_REGEX) ||
+                   currentLine.matches(RegexConstants.ABSTRACT_METHOD_REGEX)) {
+            return handleMethodLine(currentLine);
+        } else if (currentLine.matches(RegexConstants.FLOW_CONTROL_REGEX)) {
+            return handleFlowControlLine(currentLine);
+        } else if (currentLine.matches(RegexConstants.ONLY_SINGLE_LINE_COMMENT)) {
+            return handleStandaloneComment(currentLine);
+        } else if (currentLine.contains(LINE_COMMENT)) {
+            return handleLineWithComment(currentLine);
+        } else if (currentLine.matches(RegexConstants.IMPORT_OR_PACKAGE_REGEX)) {
+            return separateLineByCharacter(currentLine, PERIOD);
+        } else {
+            return separateLineByCharacter(currentLine, SPACE);
+        }
+    }
+
+    private List<String> handleQuotedString(String currentLine) {
+        List<String> parts = new ArrayList<>();
+        int start = 0;
+
+        while (start < currentLine.length()) {
+            int quoteStart = findNextQuote(currentLine, start);
+            if (quoteStart == -1) {
+                addTrimmedPart(currentLine.substring(start), parts);
+                break;
+            }
+
+            addTrimmedPart(currentLine.substring(start, quoteStart), parts);
+
+            int quoteEnd = findMatchingQuoteEnd(currentLine, quoteStart);
+            String quotedString = currentLine.substring(quoteStart, quoteEnd + 1);
+
+            if (quotedString.length() > LINE_LIMIT) {
+                parts.addAll(splitLongQuotedString(quotedString));
+            } else {
+                parts.add(quotedString);
+            }
+            start = quoteEnd + 1;
+        }
+
+        return parts;
+    }
+
+    private void addTrimmedPart(String segment, List<String> parts) {
+        String trimmed = segment.trim();
+        if (!trimmed.isEmpty()) {
+            if (trimmed.length() > LINE_LIMIT) {
+                parts.addAll(separateLineByCharacter(trimmed, SPACE));
+            } else {
+                parts.add(trimmed);
+            }
+        }
+    }
+
+    private List<String> splitLongQuotedString(String quotedString) {
+        List<String> parts = new ArrayList<>();
+        char quoteChar = quotedString.charAt(0);
+        int maxChunkSize = LINE_LIMIT - 6;
+        int start = 1;
+        boolean isFirstPart = true;
+
+        while (start < quotedString.length() - 1) {
+            int end = Math.min(start + maxChunkSize, quotedString.length() - 1);
+            if (end > start && quotedString.charAt(end - 1) == '\\') {
+                end--;
+            }
+
+            String chunk = quotedString.substring(start, end);
+            String formattedPart = (isFirstPart ? "" : INDENTATION) +
+                                   quoteChar + chunk + quoteChar +
+                                   (end < quotedString.length() - 1 ? " +" : "");
+
+            parts.add(formattedPart);
+            start = end;
+            isFirstPart = false;
+        }
+
+        return parts;
+    }
+
+    private int findNextQuote(String line, int start) {
+        int singleQuote = line.indexOf(SINGLE_QUOTE, start);
+        int doubleQuote = line.indexOf(QUOTE, start);
+
+        if (singleQuote == -1) return doubleQuote;
+        if (doubleQuote == -1) return singleQuote;
+
+        return Math.min(singleQuote, doubleQuote);
+    }
+
+    private int findMatchingQuoteEnd(String line, int start) {
+        char quoteChar = line.charAt(start);
+        boolean escapeNext = false;
+
+        for (int i = start + 1; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (escapeNext) {
+                escapeNext = false;
+                continue;
+            }
+            if (c == '\\') {
+                escapeNext = true;
+            } else if (c == quoteChar) {
+                return i;
             }
         }
 
-        String line = currentLine.substring(0, beginParenthesis);
-        sentences.add(line);
-        
-        line = currentLine.substring(beginParenthesis, endParenthesis);
-        sentences.add(line);
+        return line.length() - 1;
+    }
 
-        line = currentLine.substring(endParenthesis);
-        sentences.add(line);
+    private List<String> handleMethodLine(String currentLine) {
+        List<String> parts = separateLineByParenthesis(currentLine);
+        if (parts.size() > 1 && parts.get(1).length() > LINE_LIMIT) {
+            List<String> parameters = separateLineByCharacter(parts.get(1), COMMA);
+            parts.remove(1);
+            parts.addAll(1, parameters);
+        }
+        return parts;
+    }
 
+    private List<String> handleFlowControlLine(String currentLine) {
+        List<String> parts = separateLineByParenthesis(currentLine);
+        if (parts.size() > 1 && parts.get(1).length() > LINE_LIMIT) {
+            List<String> conditions = separateLineByCharacter(parts.get(1), SPACE);
+            parts.remove(1);
+            parts.addAll(1, conditions);
+        }
+        return parts;
+    }
+
+    private List<String> handleLineWithComment(String currentLine) {
+        int commentIndex = currentLine.indexOf(LINE_COMMENT);
+        String codePart = currentLine.substring(0, commentIndex).trim();
+        String commentPart = currentLine.substring(commentIndex);
+
+        List<String> result = new ArrayList<>();
+        if (!codePart.isEmpty()) {
+            if (codePart.length() > LINE_LIMIT) {
+                result.addAll(processLongLine(codePart));
+            } else {
+                result.add(codePart);
+            }
+        }
+        result.add(commentPart);
+        return result;
+    }
+
+    private List<String> handleStandaloneComment(String currentLine) {
+        List<String> words = separateLineByCharacter(currentLine.substring(2), SPACE);
+        List<String> formattedComment = new ArrayList<>();
+
+        formattedComment.add(BLOCK_COMMENT_START + words.get(0));
+        for (int i = 1; i < words.size(); i++) {
+            formattedComment.add("* " + words.get(i));
+        }
+        int lastIndex = formattedComment.size() - 1;
+        formattedComment.set(lastIndex, formattedComment.get(lastIndex) + BLOCK_COMMENT_END);
+
+        return formattedComment;
+    }
+
+    private List<String> separateLineByParenthesis(String currentLine) {
+        List<String> sentences = new ArrayList<>();
+        int begin = currentLine.indexOf('(');
+        int end = currentLine.lastIndexOf(')');
+
+        if (begin == -1 || end == -1) {
+            sentences.add(currentLine);
+            return sentences;
+        }
+
+        sentences.add(currentLine.substring(0, begin + 1));
+        sentences.add(currentLine.substring(begin + 1, end));
+        sentences.add(currentLine.substring(end));
         return sentences;
     }
 
-    private List<String> separateLineByCharacter (String currentLine, char separator) {
+    private List<String> separateLineByCharacter(String currentLine, char separator) {
         List<String> sentences = new ArrayList<>();
-        int initialIndex = 0;
-        int endIndex = LINE_LIMIT;
+        int start = 0;
 
-        while (endIndex < currentLine.length()) {
-            if (currentLine.charAt(endIndex) != separator) {
-                while (endIndex > initialIndex && currentLine.charAt(endIndex) != separator) {
-                    endIndex--;
+        while (start < currentLine.length()) {
+            int end = Math.min(start + LINE_LIMIT, currentLine.length());
+            if (end < currentLine.length()) {
+                int lastSep = currentLine.lastIndexOf(separator, end);
+                if (lastSep > start) {
+                    end = lastSep + 1;
                 }
             }
-            String line = currentLine.substring(initialIndex, endIndex);
-            sentences.add(line);
-            initialIndex = endIndex;
-            endIndex = initialIndex + LINE_LIMIT;
-            if (endIndex > currentLine.length()) {
-                endIndex = currentLine.length();
+
+            String part = currentLine.substring(start, end).trim();
+            if (!part.isEmpty()) {
+                sentences.add(part);
             }
+            start = end;
         }
-
-        // Add any leftover part
-        if (initialIndex < currentLine.length()) {
-            sentences.add(currentLine.substring(initialIndex));
-        }
-
-        return sentences;
-    }
-
-    private List<String> separateLineByLineComment (String currentLine) {
-        List<String> sentences = new ArrayList<>();
-        int lineCommentStart = currentLine.length()-2;
-
-        while (!(currentLine.charAt(lineCommentStart) == '/' && currentLine.charAt(lineCommentStart+1) == '/') 
-                || lineCommentStart != 0) {
-            lineCommentStart--;
-        }
-
-        String line = currentLine.substring(0, lineCommentStart);
-        sentences.add(line);
-        
-        line = currentLine.substring(lineCommentStart);
-        sentences.add(line);
-
-        return sentences;
-    }
-
-    private List<String> separateLineWithQuote (String currentLine) {
-        List<String> sentences = new ArrayList<>();
-
-        /*int endPartOfLine = 0;
-        char quoteMarc = '\"';
-
-        while (currentLine.charAt(endPartOfLine) != '\"' && currentLine.charAt(endPartOfLine) !='\'') {
-            endPartOfLine++;
-        }
-
-        if (endPartOfLine > LINE_LIMIT) {
-            sentences.add(currentLine.substring(0, endPartOfLine));
-        }
-        else{
-            quoteMarc = currentLine.charAt(endPartOfLine);
-            int endIndex = LINE_LIMIT-1;
-            if (currentLine.charAt(endIndex) != ' ') {
-                while (endIndex > 0 && currentLine.charAt(endIndex) != ' ') {
-                    endIndex--;
-                }
-            }
-            sentences.add(currentLine.substring(0, endIndex)+quoteMarc);
-            
-            String partOfLine = quoteMarc + currentLine.substring(endIndex+1);
-            endPartOfLine = 1;
-            while (currentLine.charAt(endPartOfLine) != quoteMarc) {
-                endPartOfLine++;
-            }
-
-        }*/
-
         return sentences;
     }
 }

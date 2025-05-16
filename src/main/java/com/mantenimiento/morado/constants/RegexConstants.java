@@ -72,14 +72,6 @@ public class RegexConstants {
      */
     public final static String FLOW_CONTROL_REGEX = "((if|for|while|switch)\\s*\\([^)]*\\))\\s*";
 
-    /*
-     * Regular expression to match quoted strings (single or double quotes).
-     * Example: "\"Hello, World!\"", "'Hello'".
-     */
-    public static final String QUOTED_STRING_REGEX = "\"[^\"]*\"|'[^']*'";
-
-    public static final String SINGLE_LINE_COMMENT_IN_CODE_LINE = "^.+//.*";
     public static final String ONLY_SINGLE_LINE_COMMENT = "^//.*";
     public final static String IMPORT_OR_PACKAGE_REGEX = "^\\s*(import|package)\\s+[a-zA-Z0-9_.*]+\\s*;$";
-
 }
