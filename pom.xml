@@ -6,7 +6,7 @@
 
     <groupId>com.mantenimiento.morado</groupId>
     <artifactId>proyecto-morado</artifactId>
-    <version>1.0</version>
+    <version>3.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -59,6 +59,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.4.1</version>
+                <configuration>
+                    <sourcepath>${project.basedir}/src/main/java/com/mantenimiento/morado</sourcepath>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

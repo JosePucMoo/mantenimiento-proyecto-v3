@@ -1,13 +1,15 @@
-package com.mantenimiento.morado.code.counter;
+package com.mantenimiento.morado.analyzer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mantenimiento.morado.code.model.JavaProject;
-import com.mantenimiento.morado.code.model.SourceFile;
-import com.mantenimiento.morado.code.syntax.SyntaxAnalyzer;
+import com.mantenimiento.morado.comparison.DirectoryScanner;
+import com.mantenimiento.morado.comparison.VersionComparator;
 import com.mantenimiento.morado.constants.FileStatusConstants;
+import com.mantenimiento.morado.metrics.LOCCounter;
+import com.mantenimiento.morado.model.JavaProject;
+import com.mantenimiento.morado.model.SourceFile;
 import com.mantenimiento.morado.util.FileFormatter;
 import com.mantenimiento.morado.util.ResultsTablePrinter;
 

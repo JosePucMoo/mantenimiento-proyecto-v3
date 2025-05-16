@@ -2,7 +2,7 @@ package com.mantenimiento.test.test_cases;
 
 import java.util.List;
 
-import com.mantenimiento.morado.code.counter.SourceFileAnalyzer;
+import com.mantenimiento.morado.analyzer.SourceFileAnalyzer;
 
 public class CP_010 {
     public static void main(String[] args) {

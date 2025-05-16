@@ -1,8 +1,9 @@
-package com.mantenimiento.morado.code.counter;
+package com.mantenimiento.morado.analyzer;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.mantenimiento.morado.code.model.LineTag;
+
+import com.mantenimiento.morado.model.LineTag;
 
 /**
  * Analyzer for detecting deleted lines by comparing an old version of code lines
@@ -11,6 +12,10 @@ import com.mantenimiento.morado.code.model.LineTag;
  *   <li>It exists in the old version but differs from the corresponding line in the new version.</li>
  *   <li>It exists in the old version but has no corresponding line in the new version (i.e., extra lines at the end).</li>
  * </ul>
+ * 
+ * @author Aaron Graniel
+ * @author Fernando Joachin
+ * @version 1.0.0
  */
 public class DeletedLinesAnalyzer extends LinesAnalyzer {
 

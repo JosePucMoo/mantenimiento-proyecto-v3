@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import com.mantenimiento.morado.code.counter.SourceFileAnalyzer;
+import com.mantenimiento.morado.analyzer.SourceFileAnalyzer;
 import com.mantenimiento.morado.util.FileHelper;
 
 public class CP_011 {

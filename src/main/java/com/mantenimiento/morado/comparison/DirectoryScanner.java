@@ -1,4 +1,4 @@
-package com.mantenimiento.morado.code.counter;
+package com.mantenimiento.morado.comparison;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.mantenimiento.morado.code.model.JavaProject;
-import com.mantenimiento.morado.code.model.SourceFile;
+import com.mantenimiento.morado.model.JavaProject;
+import com.mantenimiento.morado.model.SourceFile;
 
 /**
  * The {@code DirectoryScanner} class is responsible for scanning a given directory and its
@@ -58,6 +58,9 @@ public class DirectoryScanner {
     /**
      * Creates a basic SourceFile instance for a given file path.
      * This is a placeholder until proper analysis is done in SourceFileAnalyzer.
+     * 
+     * @param filePath absolute path to a Java source file
+     * @return a new {@code SourceFile} with file name and path set
      */
     private SourceFile createSourceFile(String filePath) {
         Path path = Paths.get(filePath);

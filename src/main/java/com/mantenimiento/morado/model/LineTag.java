@@ -1,9 +1,12 @@
-package com.mantenimiento.morado.code.model;
+package com.mantenimiento.morado.model;
 
 /**
  * Enum representing the type of change applied to a line of code.
  * It is used to tag lines that have been added, deleted, or modified
  * during source code comparison.
+ * 
+ * @author Aaron Graniel
+ * @version 1.0.0
  */
 public enum LineTag {
 

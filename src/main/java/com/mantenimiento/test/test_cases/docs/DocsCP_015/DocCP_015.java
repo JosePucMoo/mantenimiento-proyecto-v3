@@ -1,46 +1,15 @@
 package com.mantenimiento.test.test_cases.docs.DocsCP_015;
 
-import java.util.Arrays;
-
 public class DocCP_015 {
-    public static int sumar(int a, int b) {
-        return a + b;
+
+    // Método que recibe múltiples parámetros y los concatena en una sola línea con formato.
+    public static String construirMensaje(String nombre, int edad, String ciudad, String profesion,boolean activo, double salario) {
+        return "Nombre: " + nombre + ", Edad: " + edad + ", Ciudad: " + ciudad + ", Profesión: " + profesion + ", Activo: " + activo + ", Salario: $" + salario;
     }
 
-    public static String invertirCadena(String texto) {
-        StringBuilder sb = new StringBuilder(texto);
-        return sb.reverse().toString();
-    }
-
-    public static boolean esPrimo(int numero) {
-        if (numero < 2) {
-            return false;
-        }
-        for (int i = 2; i <= Math.sqrt(numero); i++) {
-            if (numero % i == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static int encontrarMaximo(int[] numeros) {
-        return Arrays.stream(numeros).max().orElse(Integer.MIN_VALUE);
-    }
-
+    // Método que verifica si una cadena es palíndroma ignorando mayúsculas y espacios.
     public static boolean esPalindromo(String texto) {
-        String invertida = invertirCadena(texto);
-        return texto.equalsIgnoreCase(invertida);
-    }
-
-    public static long factorial(int n) {
-        if (n < 0) {
-            return -1;
-        }
-        long resultado = 1;
-        for (int i = 2; i <= n; i++) {
-            resultado *= i;
-        }
-        return resultado;
+        String invertido = new StringBuilder(texto.replaceAll("\\s+", "").toLowerCase()).reverse().toString();
+        return texto.replaceAll("\\s+", "").toLowerCase().equals(invertido);
     }
 }

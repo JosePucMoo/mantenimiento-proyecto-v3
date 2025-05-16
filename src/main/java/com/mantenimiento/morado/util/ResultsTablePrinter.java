@@ -1,6 +1,6 @@
 package com.mantenimiento.morado.util;
 
-import com.mantenimiento.morado.code.model.SourceFile;
+import com.mantenimiento.morado.model.SourceFile;
 
 /**
  * * Utility class for printing analysis results of Java source files in a formatted table.
@@ -79,6 +79,12 @@ public class ResultsTablePrinter {
         System.out.println(SEPARATOR);
     }
 
+    /**
+     * Prints the analysis details of a specific {@link SourceFile} in a formatted row.
+     *
+     * @param file the source file containing metrics to display
+     * @param directoryName the name of the directory or version the file belongs to
+     */
     public static void printDetails(SourceFile file, String directoryName) {
         System.out.printf(
             COLUMN_FORMAT_TEMPLATE,

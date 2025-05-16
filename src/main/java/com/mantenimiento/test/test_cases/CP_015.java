@@ -3,9 +3,8 @@ package com.mantenimiento.test.test_cases;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
-import com.mantenimiento.morado.code.model.SourceFile;
+import com.mantenimiento.morado.model.SourceFile;
 import com.mantenimiento.morado.util.FileFormatter;
 import com.mantenimiento.morado.util.FileHelper;
 

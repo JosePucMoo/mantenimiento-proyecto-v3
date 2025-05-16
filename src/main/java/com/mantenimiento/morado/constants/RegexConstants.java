@@ -8,7 +8,7 @@ package com.mantenimiento.morado.constants;
  *
  * @author Ruben Alvarado
  * @author Diana Vazquez
- * @version 2.0
+ * @version 2.0.0
  */
 public class RegexConstants {
 
