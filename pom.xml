@@ -61,6 +61,8 @@
                 <version>3.4.1</version>
                 <configuration>
                     <sourcepath>${project.basedir}/src/main/java/com/mantenimiento/morado</sourcepath>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
                 </configuration>
                 <executions>
                     <execution>
@@ -69,6 +71,49 @@
                             <goal>jar</goal>
                         </goals>
                     </execution>
+                </executions>
+            </plugin>
+
+            <!-- Plugin para generar el JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                <archive>
+                    <manifest>
+                    <addClasspath>true</addClasspath>
+                    <mainClass>com.mantenimiento.morado.Main</mainClass> <!-- Clase principal -->
+                    </manifest>
+                </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin de Launch4j para generar el .exe -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                <execution>
+                    <id>l4j-clui</id>
+                    <phase>package</phase>
+                    <goals>
+                    <goal>launch4j</goal>
+                    </goals>
+                    <configuration>
+                    <headerType>console</headerType>
+                    <outfile>target/app-morado.exe</outfile> <!-- Ruta y nombre del .exe -->
+                    <jar>target/proyecto-morado-3.0.jar</jar> <!-- Ruta del JAR generado -->
+                    <errTitle>Error</errTitle>
+                    <classPath>
+                        <mainClass>com.mantenimiento.morado.Main</mainClass> <!-- Clase principal -->
+                    </classPath>
+                    <jre>
+                        <minVersion>1.8</minVersion> <!-- Versión mínima de Java requerida -->
+                    </jre>
+                    </configuration>
+                </execution>
                 </executions>
             </plugin>
         </plugins>
