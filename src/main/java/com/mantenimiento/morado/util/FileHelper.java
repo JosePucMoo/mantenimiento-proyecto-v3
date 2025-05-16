@@ -70,7 +70,6 @@ public class FileHelper {
 
             Path filePath = dir.resolve(outputFileName);
             Files.write(filePath, lines);
-            System.out.println("File saved at: " + filePath.toAbsolutePath());
         } catch (IOException e) {
             System.err.println("Error writing file: " + e.getMessage());
         }
@@ -111,7 +110,6 @@ public class FileHelper {
             // Write the content to the file
             Files.write(filePath, lines);
 
-            System.out.println("File saved at: " + filePath.toAbsolutePath());
         } catch (IOException e) {
            System.err.println("Error writing file: " + e.getMessage());
         }
