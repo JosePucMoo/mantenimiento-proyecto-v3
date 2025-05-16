@@ -14,6 +14,31 @@ import com.mantenimiento.morado.util.FileFormatter;
 import com.mantenimiento.morado.util.ResultsTablePrinter;
 
 /**
+ * ========================================================================================
+ *                                              CHANGELOG
+ * ========================================================================================
+ * 
+ * FECHA         : 16-May-2025
+ * VERSIÓN       : 2.0.0 (Release Estable)
+ * AUTOR         : [Equipo 4]
+ * 
+ * =====================================[ DETAIL OF MODIFICATIONS ]=====================================
+ * 
+ * [MODIFY] ┃ The class was updated to handle Java Projects and complexity was reduced. 
+ *             → Affected methods: analyzePath(), analyzeDirectory(), analyzeJavaFiles()
+ * 
+ *         
+ * [REFACTOR] ┃ A large class was identified. 
+ *             → Affected methods: printTotalProyectLOC(), printTotalProgramLOC()
+ *                                  printDetails(), printHeader()
+ *             → New class: ResultPrinterUtil.java
+ *                
+ * 
+ * ======================================================================================================
+ */
+/**
+
+/**
  * Analyzes Java source files in a given directory by scanning for files,
  * checking their syntax, counting lines of code (LOC), and printing the results
  * in a formatted table.

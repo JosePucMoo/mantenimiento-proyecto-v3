@@ -14,6 +14,25 @@ import com.mantenimiento.morado.model.JavaProject;
 import com.mantenimiento.morado.model.SourceFile;
 
 /**
+ * ========================================================================================
+ *                                              CHANGELOG
+ * ========================================================================================
+ * 
+ * FECHA         : 16-May-2025
+ * VERSIÓN       : 2.0.0 (Release Estable)
+ * AUTOR         : [Equipo 4]
+ * 
+ * =====================================[ DETAIL OF MODIFICATIONS ]=====================================
+ *         
+ * [MODIFY] ┃ The class was updated to handle Java Projects. 
+ *             → New methods: scanProject(), createSourceFile()
+ *                
+ * 
+ * ======================================================================================================
+ */
+/**
+
+/**
  * The {@code DirectoryScanner} class is responsible for scanning a given directory and its
  * subdirectories to retrieve Java source files and subdirectories.
  *

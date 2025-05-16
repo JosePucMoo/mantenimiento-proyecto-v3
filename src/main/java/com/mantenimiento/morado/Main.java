@@ -9,14 +9,14 @@ import com.mantenimiento.morado.util.FileHelper;
 
 public class Main {
     public static void main(String[] args) {
-        /* if (args.length == 0 || args[0].isEmpty() || args[1].isEmpty()) {
+        if (args.length == 0 || args[0].isEmpty() || args[1].isEmpty()) {
             System.out.println("Review the User Manual");
             return;
-        } */
+        }
         
         List<String> directoryPaths = List.of(
-            "morado",
-            "src\\main\\java\\com\\mantenimiento\\morado"
+            args[0],
+            args[1]
         );
 
         try {

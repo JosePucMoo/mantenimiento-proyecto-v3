@@ -5,6 +5,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+ /**
+ * ========================================================================================
+ *                                              CHANGELOG
+ * ========================================================================================
+ * 
+ * FECHA         : 15-May-2025
+ * VERSIÓN       : 2.0.0 (Release Estable)
+ * AUTOR         : [Equipo 4]
+ * 
+ * =====================================[ DETAIL OF MODIFICATIONS ]=====================================
+ * 
+ * [REFACTOR] ┃ The immutability of the class was removed. 
+ *                  → Affected class: SourceFile, SourceFileAnalyzer, DirectoryScanner
+ * 
+ * ======================================================================================================
+ */
+
 /**
  * Represents a Java source file and tracks basic metrics and state:
  * <ul>
