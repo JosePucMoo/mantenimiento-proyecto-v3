@@ -41,7 +41,8 @@ public class FileHelper {
      * @param lines    the list of strings to be written to the file
      * @param fileName the name of the output file (e.g., {@code "MyClass.java"})
      * @param tag      either {@code "deleted"} or {@code "added"}, used to select the subfolder
-     * @throws IllegalArgumentException if the tag is not {@code "deleted"} or {@code "added"}
+     * @throws IllegalArgumentException if the tag is not {@code "deleted"} or {@code "added"},the exception message will 
+ *                                 indicate the invalid tag value received.
      */
     public static void writeLinesByTag(List<String> lines, String fileName, String tag) {
         String subfolder = switch (tag) {

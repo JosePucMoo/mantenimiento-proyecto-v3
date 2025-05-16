@@ -26,7 +26,7 @@ public class RegexConstants {
      * These patterns are typically discouraged in certain coding standards for better readability.
      * </p>
      */
-    public static final String MULTI_INSTANCE_REGEX = "^\\s*\\w+\\s+\\w+\\s*=\\s*[^,;]+\\s*,\\s*\\w+.*;\\s*$";
+    public static final String MULTI_INSTANCE_REGEX = "^\\s*(?:final\\s+)?\\w+(?:<.*>)?\\s+\\w+\\s*=\\s*[^,;]+(?:\\s*,\\s*\\w+\\s*=\\s*[^,;]+)+\\s*;\\s*$";
 
     /**
      * Regular expression for detecting class declarations in Java files.

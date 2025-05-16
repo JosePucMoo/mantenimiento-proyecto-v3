@@ -1,9 +1,7 @@
 package com.mantenimiento.morado.code.counter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import com.mantenimiento.morado.util.FileHelper;
 import com.mantenimiento.morado.util.LineSimilarityUtil;
 import com.mantenimiento.morado.code.model.LineTag;
