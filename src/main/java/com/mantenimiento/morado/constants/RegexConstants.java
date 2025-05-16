@@ -65,4 +65,13 @@ public class RegexConstants {
      * </pre>
      */
     public static final String ABSTRACT_METHOD_REGEX = "^(public|private|protected)\\s+abstract\\s+[\\w<>\\[\\],]+\\s+\\w+\\s*\\(.*\\)?\\s*(//.*)?$";
+
+    /**
+     * Regular expression to match flow control statements (if, for, while, switch).
+     * Example: "if (condition)", "for (int i = 0; i < 10; i++)".
+     */
+    public final static String FLOW_CONTROL_REGEX = "((if|for|while|switch)\\s*\\([^)]*\\))\\s*";
+
+    public static final String ONLY_SINGLE_LINE_COMMENT = "^//.*";
+    public final static String IMPORT_OR_PACKAGE_REGEX = "^\\s*(import|package)\\s+[a-zA-Z0-9_.*]+\\s*;$";
 }
