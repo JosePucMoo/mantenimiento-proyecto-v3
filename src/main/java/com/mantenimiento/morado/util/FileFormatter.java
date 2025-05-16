@@ -32,7 +32,7 @@ public class FileFormatter {
 
         List<String> formattedLines = new ArrayList<>();
         for (String currentLine : lines) {
-            if (currentLine.length() > LINE_LIMIT) {
+            if (currentLine.trim().length() > LINE_LIMIT) {
                 formattedLines.addAll(processLongLine(currentLine));
             } else {
                 formattedLines.add(currentLine);
